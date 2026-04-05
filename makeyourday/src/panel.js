@@ -1,10 +1,49 @@
 import { monthNames, weekdayNames } from "./constants.js";
 import { buildDateKey, persistEventStore } from "./storage.js";
 
+/**
+ * @param {string} dateKey
+ * @returns {{ year: number, monthIndex: number, day: number } | null}
+ */
+function parseDateKey(dateKey) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateKey);
+  if (!m) return null;
+  return { year: +m[1], monthIndex: +m[2] - 1, day: +m[3] };
+}
+
+/**
+ * @param {Record<string, unknown>} store
+ * @returns {Array<{ id: string, title: string, time: string, description: string, location: string, dateKey: string }>}
+ */
+function flattenAllEventsSorted(store) {
+  const out = [];
+  const keys = Object.keys(store).sort();
+  for (const dateKey of keys) {
+    const raw = store[dateKey];
+    if (!Array.isArray(raw)) continue;
+    const parsed = parseDateKey(dateKey);
+    if (!parsed) continue;
+    for (const e of raw) {
+      if (
+        e && typeof e === "object" &&
+        typeof e.id === "string" && typeof e.title === "string" &&
+        typeof e.time === "string" && typeof e.description === "string" && typeof e.location === "string"
+      ) {
+        out.push({ ...e, dateKey });
+      }
+    }
+  }
+  out.sort((a, b) => {
+    if (a.dateKey !== b.dateKey) return a.dateKey.localeCompare(b.dateKey);
+    return a.time.localeCompare(b.time);
+  });
+  return out;
+}
+
 const PANEL_HTML = `
   <div class="select-panel" role="dialog" aria-modal="true" aria-label="Make Your Day - Day details" aria-hidden="true">
     <section class="event-shell" aria-live="polite">
-      <header class="event-head">
+      <header class="event-head" data-event-head>
         <div class="event-date-number" data-date-number>01</div>
         <div class="event-date-meta">
           <p class="event-weekday" data-weekday>Monday</p>
@@ -18,8 +57,8 @@ const PANEL_HTML = `
             <span class="event-menu-note">Create an event for this day.</span>
           </button>
           <button type="button" class="event-menu-card" data-menu-show>
-            <span class="event-menu-title">Show events</span>
-            <span class="event-menu-note">Browse saved events for this day.</span>
+            <span class="event-menu-title">This day</span>
+            <span class="event-menu-note">Browse events for the selected day.</span>
           </button>
           <button type="button" class="event-menu-card" data-menu-delete>
             <span class="event-menu-title">Delete an event</span>
@@ -31,8 +70,19 @@ const PANEL_HTML = `
           <ul class="event-list" data-event-list></ul>
           <p class="event-empty" data-empty-message>No events yet for this day.</p>
         </div>
+        <div class="event-global-list-view" data-global-list-view hidden tabindex="-1">
+          <p class="global-list-description">All saved events, soonest first.</p>
+          <ul class="event-list global-event-list" data-global-event-list></ul>
+          <p class="event-empty" data-global-empty>No saved events yet.</p>
+        </div>
         <article class="event-detail-view" data-detail-view hidden>
-          <button class="event-back" type="button" data-back-list>&lt; Back to list</button>
+          <div class="event-detail-toolbar">
+            <button class="event-back" type="button" data-back-list>&lt; Back to list</button>
+            <div class="event-detail-actions">
+              <button type="button" class="event-detail-edit" data-detail-edit>Edit</button>
+              <button type="button" class="event-detail-delete" data-detail-delete>Delete</button>
+            </div>
+          </div>
           <h3 class="event-detail-title" data-detail-title></h3>
           <dl class="event-detail-grid">
             <div><dt>Time</dt><dd data-detail-time></dd></div>
@@ -113,6 +163,8 @@ export function createPanel(eventStore, dayState, haptics) {
     menuDeleteBtn: overlay.querySelector("[data-menu-delete]"),
     backBtn: overlay.querySelector("[data-back-list]"),
     backMenuBtn: overlay.querySelector("[data-back-menu]"),
+    detailEditBtn: overlay.querySelector("[data-detail-edit]"),
+    detailDeleteBtn: overlay.querySelector("[data-detail-delete]"),
     formNode: overlay.querySelector("[data-event-form]"),
     formDateNumberNode: overlay.querySelector("[data-form-date-number]"),
     formWeekdayNode: overlay.querySelector("[data-form-weekday]"),
@@ -126,6 +178,10 @@ export function createPanel(eventStore, dayState, haptics) {
     timeMinuteTrackNode: overlay.querySelector("[data-time-minute-track]"),
     timeWheelButtons: overlay.querySelectorAll("[data-time-wheel]"),
     ampmButtons: overlay.querySelectorAll("[data-ampm]"),
+    eventHeadNode: overlay.querySelector("[data-event-head]"),
+    globalListViewNode: overlay.querySelector("[data-global-list-view]"),
+    globalEventListNode: overlay.querySelector("[data-global-event-list]"),
+    globalEmptyNode: overlay.querySelector("[data-global-empty]"),
   };
 
   const panelState = {
@@ -134,6 +190,8 @@ export function createPanel(eventStore, dayState, haptics) {
     day: 1,
     dateKey: "",
     mode: "menu",
+    /** @type {'calendar' | 'global'} */
+    entry: "calendar",
     deleteMode: false,
     detailEventId: null,
     editEventId: null,
@@ -156,13 +214,29 @@ export function createPanel(eventStore, dayState, haptics) {
   function setMode(mode) {
     panelState.mode = mode;
     const formMode = mode === "form-add" || mode === "form-edit";
-    const browseMode = mode === "list" || mode === "detail";
+    const globalListMode = mode === "global-list";
     eventShell.classList.toggle("is-form-mode", formMode);
+    eventShell.classList.toggle(
+      "is-global-mode",
+      globalListMode || (panelState.entry === "global" && (mode === "detail" || mode === "menu")),
+    );
     refs.menuViewNode.hidden = mode !== "menu";
     refs.listViewNode.hidden = mode !== "list";
+    refs.globalListViewNode.hidden = !globalListMode;
     refs.detailViewNode.hidden = mode !== "detail";
     refs.formNode.hidden = !formMode;
-    refs.backMenuBtn.hidden = !browseMode;
+    refs.eventHeadNode.hidden = globalListMode;
+    const showBackMenuArrow =
+      (panelState.entry === "calendar" && (mode === "list" || mode === "detail")) ||
+      (panelState.entry === "global" && (mode === "global-list" || mode === "menu" || mode === "list"));
+    refs.backMenuBtn.hidden = !showBackMenuArrow;
+    if (panelState.entry === "global" && mode === "menu") {
+      refs.backMenuBtn.setAttribute("aria-label", "Back to all events");
+    } else if (panelState.entry === "global" && mode === "global-list") {
+      refs.backMenuBtn.setAttribute("aria-label", "Open day options");
+    } else {
+      refs.backMenuBtn.setAttribute("aria-label", "Back to options");
+    }
   }
 
   function transitionToMode(mode, { prepare, afterSet, onComplete } = {}) {
@@ -180,6 +254,25 @@ export function createPanel(eventStore, dayState, haptics) {
       eventShell.classList.remove("is-mode-transitioning");
       if (typeof onComplete === "function") onComplete();
     }, 230);
+  }
+
+  function updateHeaderFromDateKey(dateKey) {
+    const parsed = parseDateKey(dateKey);
+    if (!parsed) return;
+    const { monthIndex, day } = parsed;
+    const date = new Date(parsed.year, monthIndex, day);
+    panelState.monthIndex = monthIndex;
+    panelState.day = day;
+    panelState.dateKey = dateKey;
+    const paddedDay = String(day).padStart(2, "0");
+    const weekday = weekdayNames[date.getDay()];
+    const month = monthNames[monthIndex];
+    refs.dateNumberNode.textContent = paddedDay;
+    refs.weekdayNode.textContent = weekday;
+    refs.monthNode.textContent = month;
+    refs.formDateNumberNode.textContent = paddedDay;
+    refs.formWeekdayNode.textContent = weekday;
+    refs.formMonthNode.textContent = month;
   }
 
   function updateCurrentDayFromLine(line) {
@@ -235,8 +328,13 @@ export function createPanel(eventStore, dayState, haptics) {
     const eventItem = events.find((e) => e.id === panelState.detailEventId);
     if (!eventItem) {
       panelState.detailEventId = null;
-      setMode("list");
-      renderEventList();
+      if (panelState.entry === "global") {
+        setMode("global-list");
+        renderGlobalEventList();
+      } else {
+        setMode("list");
+        renderEventList();
+      }
       return;
     }
     refs.detailTitleNode.textContent = eventItem.title;
@@ -282,8 +380,39 @@ export function createPanel(eventStore, dayState, haptics) {
     return persistEventStore(eventStore);
   }
 
+  function renderGlobalEventList() {
+    const flat = flattenAllEventsSorted(eventStore);
+    refs.globalEventListNode.innerHTML = "";
+    if (flat.length === 0) {
+      refs.globalEmptyNode.hidden = false;
+      return;
+    }
+    refs.globalEmptyNode.hidden = true;
+    for (const eventItem of flat) {
+      const parsed = parseDateKey(eventItem.dateKey);
+      const dateLabel = parsed
+        ? `${monthNames[parsed.monthIndex].slice(0, 3)} ${parsed.day}`
+        : eventItem.dateKey;
+      const li = document.createElement("li");
+      li.className = "event-item";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.dataset.eventId = eventItem.id;
+      btn.dataset.dateKey = eventItem.dateKey;
+      btn.append(
+        Object.assign(document.createElement("span"), { className: "event-item-date", textContent: dateLabel }),
+        Object.assign(document.createElement("span"), { className: "event-item-time", textContent: eventItem.time }),
+        Object.assign(document.createElement("span"), { className: "event-item-title", textContent: eventItem.title }),
+        Object.assign(document.createElement("span"), { className: "event-item-location", textContent: eventItem.location }),
+      );
+      li.append(btn);
+      refs.globalEventListNode.append(li);
+    }
+  }
+
   function refreshPanelContent() {
     renderEventList();
+    if (panelState.mode === "global-list") renderGlobalEventList();
     if (panelState.mode === "detail") renderDetail();
   }
 
@@ -308,6 +437,10 @@ export function createPanel(eventStore, dayState, haptics) {
     overlay.classList.remove("is-active");
     document.body.classList.remove("is-transitioning");
     panel.setAttribute("aria-hidden", "true");
+    if (!preserveFocus) {
+      panelState.line = null;
+      panelState.entry = "calendar";
+    }
     setMode("menu");
     if (!preserveFocus && lastFocusedElement && typeof lastFocusedElement.focus === "function") lastFocusedElement.focus();
     if (!preserveFocus) {
@@ -322,6 +455,7 @@ export function createPanel(eventStore, dayState, haptics) {
   function startPanelTransition(line) {
     const wave = line.querySelector(".wave");
     if (!wave) return;
+    panelState.entry = "calendar";
     updateCurrentDayFromLine(line);
     panelState.deleteMode = false;
     setMode("menu");
@@ -346,7 +480,52 @@ export function createPanel(eventStore, dayState, haptics) {
       }, 620);
     });
     timers.resetTransitionTimeout = window.setTimeout(() => panel.classList.add("is-settled"), 620);
+    panel.setAttribute("aria-label", "Make Your Day - Day details");
   }
+
+  function startGlobalEventsPanel(anchorEl) {
+    const barRect = anchorEl.getBoundingClientRect();
+    panelState.entry = "global";
+    panelState.line = null;
+    panelState.deleteMode = false;
+    panelState.detailEventId = null;
+    panelState.editEventId = null;
+    setMode("global-list");
+    renderGlobalEventList();
+    const panelSize = Math.max(420, Math.min(Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.78), 760));
+    panel.style.setProperty("--start-x", `${Math.round(barRect.right)}px`);
+    panel.style.setProperty("--start-y", `${Math.round(barRect.bottom)}px`);
+    panel.style.setProperty("--panel-size", `${panelSize}px`);
+    panel.setAttribute("aria-label", "Make Your Day - All events");
+    lastFocusedElement = document.activeElement;
+    resetPanelTransition({ preserveFocus: true });
+    void panel.offsetHeight;
+    timers.pendingActivationRaf = requestAnimationFrame(() => {
+      setMode("global-list");
+      panel.setAttribute("aria-hidden", "false");
+      overlay.classList.add("is-active");
+      document.body.classList.add("is-transitioning");
+      haptics.trigger("success");
+      timers.pendingFocusTimeout = window.setTimeout(() => {
+        const firstBtn = refs.globalEventListNode.querySelector("button");
+        if (overlay.classList.contains("is-active") && firstBtn) firstBtn.focus();
+        else if (overlay.classList.contains("is-active")) refs.globalListViewNode.focus?.();
+      }, 620);
+    });
+    timers.resetTransitionTimeout = window.setTimeout(() => panel.classList.add("is-settled"), 620);
+  }
+
+  refs.globalEventListNode.addEventListener("click", (e) => {
+    const trigger = e.target.closest("button[data-event-id]");
+    if (!trigger || !trigger.dataset.dateKey) return;
+    haptics.trigger();
+    panelState.line = null;
+    panelState.dateKey = trigger.dataset.dateKey;
+    panelState.detailEventId = trigger.dataset.eventId;
+    updateHeaderFromDateKey(panelState.dateKey);
+    setMode("detail");
+    renderDetail();
+  });
 
   refs.eventListNode.addEventListener("click", (e) => {
     const trigger = e.target.closest("button[data-event-id]");
@@ -368,6 +547,13 @@ export function createPanel(eventStore, dayState, haptics) {
 
   refs.backBtn.addEventListener("click", () => {
     haptics.trigger();
+    if (panelState.entry === "global") {
+      transitionToMode("global-list", {
+        prepare: () => { panelState.detailEventId = null; },
+        afterSet: () => renderGlobalEventList(),
+      });
+      return;
+    }
     transitionToMode("list", {
       prepare: () => { panelState.detailEventId = null; },
       afterSet: () => refreshPanelContent(),
@@ -376,12 +562,57 @@ export function createPanel(eventStore, dayState, haptics) {
 
   refs.backMenuBtn.addEventListener("click", () => {
     haptics.trigger();
+    if (panelState.entry === "global" && panelState.mode === "menu") {
+      transitionToMode("global-list", {
+        afterSet: () => renderGlobalEventList(),
+      });
+      return;
+    }
+    if (panelState.entry === "global" && panelState.mode === "global-list") {
+      const now = new Date();
+      transitionToMode("menu", {
+        prepare: () => {
+          panelState.line = null;
+          panelState.detailEventId = null;
+          panelState.deleteMode = false;
+          updateHeaderFromDateKey(buildDateKey(now.getMonth(), now.getDate()));
+        },
+      });
+      return;
+    }
     transitionToMode("menu", {
       prepare: () => {
         panelState.detailEventId = null;
         panelState.deleteMode = false;
       },
     });
+  });
+
+  refs.detailEditBtn.addEventListener("click", () => {
+    const events = getEventsForCurrentDay();
+    const eventItem = events.find((e) => e.id === panelState.detailEventId);
+    if (!eventItem) return;
+    haptics.trigger();
+    openForm("form-edit", eventItem, { animate: true });
+  });
+
+  refs.detailDeleteBtn.addEventListener("click", () => {
+    if (!panelState.detailEventId) return;
+    if (!window.confirm("Delete this event? This cannot be undone.")) return;
+    const deleted = removeCurrentEvent(panelState.detailEventId);
+    if (!deleted) return;
+    haptics.trigger("error");
+    if (panelState.entry === "global") {
+      transitionToMode("global-list", {
+        prepare: () => { panelState.detailEventId = null; },
+        afterSet: () => renderGlobalEventList(),
+      });
+    } else {
+      transitionToMode("list", {
+        prepare: () => { panelState.detailEventId = null; },
+        afterSet: () => refreshPanelContent(),
+      });
+    }
   });
 
   refs.menuAddBtn.addEventListener("click", () => {
@@ -449,6 +680,7 @@ export function createPanel(eventStore, dayState, haptics) {
     refreshPanelContent,
     resetPanelTransition,
     startPanelTransition,
+    startGlobalEventsPanel,
     getEventsForCurrentDay,
     removeCurrentEvent,
     openForm,

@@ -1,17 +1,7 @@
-# Make Your Day
+# SandBox
 
-Minimal calendar app for planning your day. Pick a month, choose a date, and add events.
+This repository contains small projects and experiments.
 
-## What it does
+## Make Your Day
 
-- **Month selector** — 12 vertical lines, one per month
-- **Day dial** — Spin to pick the day of the month
-- **Events** — Add, view, and delete events for any date
-- **Local storage** — Events are saved in your browser
-- **Haptic feedback** — Optional vibration on supported devices (mobile)
-
-## Tech stack
-
-- Vanilla HTML, CSS, JavaScript
-- [Vite](https://vitejs.dev/) for dev and build
-- [web-haptics](https://github.com/lochie/web-haptics) for haptic feedback
+The **Make Your Day** calendar app lives in [`makeyourday/`](makeyourday/README.md). See that folder for setup, development, and the optional Tauri Windows desktop build.

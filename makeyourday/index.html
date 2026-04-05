@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Make Your Day</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Doto:wght@400..700&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="dot-grid-pulse" class="dot-grid-pulse" aria-hidden="true"></canvas>
+    <main class="app-main" aria-label="Make Your Day - Event Calendar and events">
+      <div class="app-viewport">
+        <header class="app-header">
+          <div class="app-header-brand">
+            <h1 class="app-title">Make your day - Event Calendar</h1>
+            <button type="button" class="app-show-events" data-show-all-events>Show events</button>
+          </div>
+        </header>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">01</span><span class="month" data-text="JANUARY"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">02</span><span class="month" data-text="FEBRUARY"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">03</span><span class="month" data-text="MARCH"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">04</span><span class="month" data-text="APRIL"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">05</span><span class="month" data-text="MAY"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">06</span><span class="month" data-text="JUNE"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">07</span><span class="month" data-text="JULY"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">08</span><span class="month" data-text="AUGUST"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">09</span><span class="month" data-text="SEPTEMBER"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">10</span><span class="month" data-text="OCTOBER"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">11</span><span class="month" data-text="NOVEMBER"></span><span class="stem"></span><span class="wave"></span></label>
+        <label class="line"><input type="radio" name="line-select" /><span class="num">12</span><span class="month" data-text="DECEMBER"></span><span class="stem"></span><span class="wave"></span></label>
+      </div>
+    </main>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
