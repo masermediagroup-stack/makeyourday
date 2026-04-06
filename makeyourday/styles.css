@@ -746,8 +746,7 @@ body.is-transitioning .app-header {
   overflow: auto;
 }
 
-.event-description,
-.global-list-description {
+.event-description {
   margin: 0;
   font: 600 11px/1.3 var(--font-ui);
   text-transform: uppercase;
@@ -755,18 +754,41 @@ body.is-transitioning .app-header {
   color: var(--text-secondary);
 }
 
-.event-global-list-view {
-  height: 100%;
+.event-shell.is-global-mode .event-list-view .event-list {
+  flex: 1;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-bottom: 24px;
 }
 
-.global-event-list .event-item > button {
-  grid-template-columns: 46px 52px 1fr minmax(0, 96px);
+/* Global: reserve in-flow space for the absolute ← (.event-menu-back); padding alone can still layer under it */
+.event-shell.is-global-mode .event-list-view {
+  padding-bottom: 16px;
+}
+
+.event-shell.is-global-mode .event-list-add-card {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 56px;
+}
+
+/* Sit the control in the empty strip below the add card (not over the card) */
+.event-shell.is-global-mode .event-menu-back {
+  bottom: 14px;
+}
+
+.event-list.is-global-event-list .event-item > button {
+  grid-template-columns: minmax(46px, max-content) minmax(5.75rem, max-content) minmax(0, 1fr) minmax(0, 96px);
   gap: 8px;
+  align-items: center;
+}
+
+.event-list-add-card {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.global-event-list .event-item-location {
+  text-align: right;
+  justify-self: end;
 }
 
 .event-item-date {
@@ -774,6 +796,7 @@ body.is-transitioning .app-header {
   letter-spacing: -0.03em;
   color: var(--text-secondary);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .event-shell.is-delete-mode .event-description {
@@ -787,6 +810,14 @@ body.is-transitioning .app-header {
   display: grid;
   gap: 7px;
   overflow: auto;
+  overflow-x: hidden;
+  align-content: start;
+  -webkit-overflow-scrolling: touch;
+}
+
+.event-item {
+  align-self: start;
+  min-width: 0;
 }
 
 .event-item > button {
@@ -797,8 +828,9 @@ body.is-transitioning .app-header {
   text-align: left;
   padding: 8px 9px;
   display: grid;
-  grid-template-columns: 56px 1fr auto;
+  grid-template-columns: minmax(72px, max-content) 1fr auto;
   gap: 10px;
+  align-items: center;
   cursor: pointer;
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
@@ -822,14 +854,15 @@ body.is-transitioning .app-header {
 }
 
 .event-item-time {
-  font: 700 11px/1 var(--font-mono);
+  font: 700 11px/1.2 var(--font-mono);
   color: var(--text-secondary);
-  align-self: center;
+  white-space: nowrap;
 }
 
 .event-item-title {
   font: 700 12px/1.15 var(--font-ui);
   color: var(--text-display);
+  min-width: 0;
 }
 
 .event-item-location {
@@ -837,7 +870,7 @@ body.is-transitioning .app-header {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-secondary);
-  align-self: center;
+  min-width: 0;
 }
 
 .event-empty {

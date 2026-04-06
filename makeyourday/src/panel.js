@@ -69,11 +69,10 @@ const PANEL_HTML = `
           <p class="event-description">What needs to be done today.</p>
           <ul class="event-list" data-event-list></ul>
           <p class="event-empty" data-empty-message>No events yet for this day.</p>
-        </div>
-        <div class="event-global-list-view" data-global-list-view hidden tabindex="-1">
-          <p class="global-list-description">All saved events, soonest first.</p>
-          <ul class="event-list global-event-list" data-global-event-list></ul>
-          <p class="event-empty" data-global-empty>No saved events yet.</p>
+          <button type="button" class="event-menu-card event-list-add-card" data-global-list-add hidden>
+            <span class="event-menu-title">Add event</span>
+            <span class="event-menu-note">Create an event for today.</span>
+          </button>
         </div>
         <article class="event-detail-view" data-detail-view hidden>
           <div class="event-detail-toolbar">
@@ -179,9 +178,7 @@ export function createPanel(eventStore, dayState, haptics) {
     timeWheelButtons: overlay.querySelectorAll("[data-time-wheel]"),
     ampmButtons: overlay.querySelectorAll("[data-ampm]"),
     eventHeadNode: overlay.querySelector("[data-event-head]"),
-    globalListViewNode: overlay.querySelector("[data-global-list-view]"),
-    globalEventListNode: overlay.querySelector("[data-global-event-list]"),
-    globalEmptyNode: overlay.querySelector("[data-global-empty]"),
+    globalListAddBtn: overlay.querySelector("[data-global-list-add]"),
   };
 
   const panelState = {
@@ -214,26 +211,24 @@ export function createPanel(eventStore, dayState, haptics) {
   function setMode(mode) {
     panelState.mode = mode;
     const formMode = mode === "form-add" || mode === "form-edit";
-    const globalListMode = mode === "global-list";
+    const globalShell =
+      panelState.entry === "global" && (mode === "list" || mode === "detail");
     eventShell.classList.toggle("is-form-mode", formMode);
-    eventShell.classList.toggle(
-      "is-global-mode",
-      globalListMode || (panelState.entry === "global" && (mode === "detail" || mode === "menu")),
-    );
+    eventShell.classList.toggle("is-global-mode", globalShell);
     refs.menuViewNode.hidden = mode !== "menu";
     refs.listViewNode.hidden = mode !== "list";
-    refs.globalListViewNode.hidden = !globalListMode;
     refs.detailViewNode.hidden = mode !== "detail";
     refs.formNode.hidden = !formMode;
-    refs.eventHeadNode.hidden = globalListMode;
+    refs.eventHeadNode.hidden = false;
     const showBackMenuArrow =
       (panelState.entry === "calendar" && (mode === "list" || mode === "detail")) ||
-      (panelState.entry === "global" && (mode === "global-list" || mode === "menu" || mode === "list"));
+      (panelState.entry === "global" && (mode === "list" || mode === "detail"));
     refs.backMenuBtn.hidden = !showBackMenuArrow;
-    if (panelState.entry === "global" && mode === "menu") {
-      refs.backMenuBtn.setAttribute("aria-label", "Back to all events");
-    } else if (panelState.entry === "global" && mode === "global-list") {
-      refs.backMenuBtn.setAttribute("aria-label", "Open day options");
+    if (panelState.entry === "global") {
+      refs.backMenuBtn.setAttribute(
+        "aria-label",
+        mode === "list" ? "Close" : "Back to all events",
+      );
     } else {
       refs.backMenuBtn.setAttribute("aria-label", "Back to options");
     }
@@ -296,8 +291,46 @@ export function createPanel(eventStore, dayState, haptics) {
   }
 
   function renderEventList() {
+    const isGlobal = panelState.entry === "global";
+    refs.globalListAddBtn.hidden = !isGlobal || panelState.mode !== "list";
+    refs.eventListNode.classList.toggle("is-global-event-list", isGlobal);
+    eventShell.classList.toggle("is-delete-mode", panelState.deleteMode && !isGlobal);
+
+    if (isGlobal) {
+      const flat = flattenAllEventsSorted(eventStore);
+      refs.descriptionNode.textContent = "All saved events, soonest first.";
+      refs.emptyNode.textContent = "No saved events yet.";
+      refs.eventListNode.innerHTML = "";
+      if (flat.length === 0) {
+        refs.emptyNode.hidden = false;
+        if (panelState.mode === "detail") setMode("list");
+        return;
+      }
+      refs.emptyNode.hidden = true;
+      for (const eventItem of flat) {
+        const parsed = parseDateKey(eventItem.dateKey);
+        const dateLabel = parsed
+          ? `${monthNames[parsed.monthIndex].slice(0, 3)} ${parsed.day}`
+          : eventItem.dateKey;
+        const li = document.createElement("li");
+        li.className = "event-item";
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.eventId = eventItem.id;
+        btn.dataset.dateKey = eventItem.dateKey;
+        btn.append(
+          Object.assign(document.createElement("span"), { className: "event-item-date", textContent: dateLabel }),
+          Object.assign(document.createElement("span"), { className: "event-item-time", textContent: eventItem.time }),
+          Object.assign(document.createElement("span"), { className: "event-item-title", textContent: eventItem.title }),
+          Object.assign(document.createElement("span"), { className: "event-item-location", textContent: eventItem.location }),
+        );
+        li.append(btn);
+        refs.eventListNode.append(li);
+      }
+      return;
+    }
+
     const events = getEventsForCurrentDay();
-    eventShell.classList.toggle("is-delete-mode", panelState.deleteMode);
     refs.descriptionNode.textContent = panelState.deleteMode ? "Select an event to delete." : "What needs to be done today.";
     refs.emptyNode.textContent = panelState.deleteMode ? "No events to delete for this day." : "No events yet for this day.";
     refs.eventListNode.innerHTML = "";
@@ -328,13 +361,8 @@ export function createPanel(eventStore, dayState, haptics) {
     const eventItem = events.find((e) => e.id === panelState.detailEventId);
     if (!eventItem) {
       panelState.detailEventId = null;
-      if (panelState.entry === "global") {
-        setMode("global-list");
-        renderGlobalEventList();
-      } else {
-        setMode("list");
-        renderEventList();
-      }
+      setMode("list");
+      refreshPanelContent();
       return;
     }
     refs.detailTitleNode.textContent = eventItem.title;
@@ -380,39 +408,8 @@ export function createPanel(eventStore, dayState, haptics) {
     return persistEventStore(eventStore);
   }
 
-  function renderGlobalEventList() {
-    const flat = flattenAllEventsSorted(eventStore);
-    refs.globalEventListNode.innerHTML = "";
-    if (flat.length === 0) {
-      refs.globalEmptyNode.hidden = false;
-      return;
-    }
-    refs.globalEmptyNode.hidden = true;
-    for (const eventItem of flat) {
-      const parsed = parseDateKey(eventItem.dateKey);
-      const dateLabel = parsed
-        ? `${monthNames[parsed.monthIndex].slice(0, 3)} ${parsed.day}`
-        : eventItem.dateKey;
-      const li = document.createElement("li");
-      li.className = "event-item";
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.dataset.eventId = eventItem.id;
-      btn.dataset.dateKey = eventItem.dateKey;
-      btn.append(
-        Object.assign(document.createElement("span"), { className: "event-item-date", textContent: dateLabel }),
-        Object.assign(document.createElement("span"), { className: "event-item-time", textContent: eventItem.time }),
-        Object.assign(document.createElement("span"), { className: "event-item-title", textContent: eventItem.title }),
-        Object.assign(document.createElement("span"), { className: "event-item-location", textContent: eventItem.location }),
-      );
-      li.append(btn);
-      refs.globalEventListNode.append(li);
-    }
-  }
-
   function refreshPanelContent() {
     renderEventList();
-    if (panelState.mode === "global-list") renderGlobalEventList();
     if (panelState.mode === "detail") renderDetail();
   }
 
@@ -485,13 +482,16 @@ export function createPanel(eventStore, dayState, haptics) {
 
   function startGlobalEventsPanel(anchorEl) {
     const barRect = anchorEl.getBoundingClientRect();
+    const now = new Date();
     panelState.entry = "global";
     panelState.line = null;
     panelState.deleteMode = false;
     panelState.detailEventId = null;
     panelState.editEventId = null;
-    setMode("global-list");
-    renderGlobalEventList();
+    panelState.dateKey = buildDateKey(now.getMonth(), now.getDate());
+    updateHeaderFromDateKey(panelState.dateKey);
+    setMode("list");
+    renderEventList();
     const panelSize = Math.max(420, Math.min(Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.78), 760));
     panel.style.setProperty("--start-x", `${Math.round(barRect.right)}px`);
     panel.style.setProperty("--start-y", `${Math.round(barRect.bottom)}px`);
@@ -501,35 +501,34 @@ export function createPanel(eventStore, dayState, haptics) {
     resetPanelTransition({ preserveFocus: true });
     void panel.offsetHeight;
     timers.pendingActivationRaf = requestAnimationFrame(() => {
-      setMode("global-list");
+      setMode("list");
       panel.setAttribute("aria-hidden", "false");
       overlay.classList.add("is-active");
       document.body.classList.add("is-transitioning");
       haptics.trigger("success");
       timers.pendingFocusTimeout = window.setTimeout(() => {
-        const firstBtn = refs.globalEventListNode.querySelector("button");
+        const firstBtn = refs.eventListNode.querySelector("button[data-event-id]");
         if (overlay.classList.contains("is-active") && firstBtn) firstBtn.focus();
-        else if (overlay.classList.contains("is-active")) refs.globalListViewNode.focus?.();
+        else if (overlay.classList.contains("is-active")) refs.globalListAddBtn.focus();
       }, 620);
     });
     timers.resetTransitionTimeout = window.setTimeout(() => panel.classList.add("is-settled"), 620);
   }
 
-  refs.globalEventListNode.addEventListener("click", (e) => {
-    const trigger = e.target.closest("button[data-event-id]");
-    if (!trigger || !trigger.dataset.dateKey) return;
-    haptics.trigger();
-    panelState.line = null;
-    panelState.dateKey = trigger.dataset.dateKey;
-    panelState.detailEventId = trigger.dataset.eventId;
-    updateHeaderFromDateKey(panelState.dateKey);
-    setMode("detail");
-    renderDetail();
-  });
-
   refs.eventListNode.addEventListener("click", (e) => {
     const trigger = e.target.closest("button[data-event-id]");
     if (!trigger) return;
+    if (panelState.entry === "global") {
+      if (!trigger.dataset.dateKey) return;
+      if (panelState.deleteMode) return;
+      haptics.trigger();
+      panelState.dateKey = trigger.dataset.dateKey;
+      panelState.detailEventId = trigger.dataset.eventId;
+      updateHeaderFromDateKey(panelState.dateKey);
+      setMode("detail");
+      renderDetail();
+      return;
+    }
     if (panelState.deleteMode) {
       const deleted = removeCurrentEvent(trigger.dataset.eventId);
       if (!deleted) return;
@@ -548,9 +547,14 @@ export function createPanel(eventStore, dayState, haptics) {
   refs.backBtn.addEventListener("click", () => {
     haptics.trigger();
     if (panelState.entry === "global") {
-      transitionToMode("global-list", {
-        prepare: () => { panelState.detailEventId = null; },
-        afterSet: () => renderGlobalEventList(),
+      transitionToMode("list", {
+        prepare: () => {
+          panelState.detailEventId = null;
+          const now = new Date();
+          panelState.dateKey = buildDateKey(now.getMonth(), now.getDate());
+          updateHeaderFromDateKey(panelState.dateKey);
+        },
+        afterSet: () => refreshPanelContent(),
       });
       return;
     }
@@ -562,22 +566,22 @@ export function createPanel(eventStore, dayState, haptics) {
 
   refs.backMenuBtn.addEventListener("click", () => {
     haptics.trigger();
-    if (panelState.entry === "global" && panelState.mode === "menu") {
-      transitionToMode("global-list", {
-        afterSet: () => renderGlobalEventList(),
-      });
-      return;
-    }
-    if (panelState.entry === "global" && panelState.mode === "global-list") {
-      const now = new Date();
-      transitionToMode("menu", {
-        prepare: () => {
-          panelState.line = null;
-          panelState.detailEventId = null;
-          panelState.deleteMode = false;
-          updateHeaderFromDateKey(buildDateKey(now.getMonth(), now.getDate()));
-        },
-      });
+    if (panelState.entry === "global") {
+      if (panelState.mode === "list") {
+        resetPanelTransition();
+        return;
+      }
+      if (panelState.mode === "detail") {
+        transitionToMode("list", {
+          prepare: () => {
+            panelState.detailEventId = null;
+            const now = new Date();
+            panelState.dateKey = buildDateKey(now.getMonth(), now.getDate());
+            updateHeaderFromDateKey(panelState.dateKey);
+          },
+          afterSet: () => refreshPanelContent(),
+        });
+      }
       return;
     }
     transitionToMode("menu", {
@@ -603,9 +607,14 @@ export function createPanel(eventStore, dayState, haptics) {
     if (!deleted) return;
     haptics.trigger("error");
     if (panelState.entry === "global") {
-      transitionToMode("global-list", {
-        prepare: () => { panelState.detailEventId = null; },
-        afterSet: () => renderGlobalEventList(),
+      transitionToMode("list", {
+        prepare: () => {
+          panelState.detailEventId = null;
+          const now = new Date();
+          panelState.dateKey = buildDateKey(now.getMonth(), now.getDate());
+          updateHeaderFromDateKey(panelState.dateKey);
+        },
+        afterSet: () => refreshPanelContent(),
       });
     } else {
       transitionToMode("list", {
@@ -618,6 +627,15 @@ export function createPanel(eventStore, dayState, haptics) {
   refs.menuAddBtn.addEventListener("click", () => {
     haptics.trigger();
     panelState.deleteMode = false;
+    openForm("form-add", undefined, { animate: true });
+  });
+
+  refs.globalListAddBtn.addEventListener("click", () => {
+    haptics.trigger();
+    panelState.deleteMode = false;
+    const now = new Date();
+    panelState.dateKey = buildDateKey(now.getMonth(), now.getDate());
+    updateHeaderFromDateKey(panelState.dateKey);
     openForm("form-add", undefined, { animate: true });
   });
 
@@ -643,6 +661,13 @@ export function createPanel(eventStore, dayState, haptics) {
       { delay: 100, duration: 40, intensity: 0.6 },
     ]);
     panelState.editEventId = null;
+    if (panelState.entry === "global") {
+      const now = new Date();
+      panelState.dateKey = buildDateKey(now.getMonth(), now.getDate());
+      updateHeaderFromDateKey(panelState.dateKey);
+      transitionToMode("list", { afterSet: () => refreshPanelContent() });
+      return;
+    }
     transitionToMode("menu");
   });
 
@@ -660,6 +685,11 @@ export function createPanel(eventStore, dayState, haptics) {
     haptics.trigger("success");
     panelState.deleteMode = false;
     panelState.editEventId = null;
+    if (panelState.entry === "global") {
+      const now = new Date();
+      panelState.dateKey = buildDateKey(now.getMonth(), now.getDate());
+      updateHeaderFromDateKey(panelState.dateKey);
+    }
     setMode("list");
     refreshPanelContent();
   });
