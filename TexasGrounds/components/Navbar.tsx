@@ -49,11 +49,25 @@ export default function Navbar({ links }: NavbarProps) {
           ))}
         </nav>
 
+        <div className="hidden items-center gap-3 md:flex">
+          <Link
+            href="/contact"
+            className="rounded-full border border-textPrimary/20 px-5 py-2.5 text-sm font-semibold text-textPrimary transition-transform duration-200 hover:translate-y-[-1px] active:scale-[0.98]"
+          >
+            Contact
+          </Link>
+          <Link
+            href="/#contact"
+            className="rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-white transition-transform duration-200 hover:translate-y-[-1px] active:scale-[0.98]"
+          >
+            Get a Free Quote
+          </Link>
+        </div>
         <Link
-          href="/#contact"
-          className="rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-white transition-transform duration-200 hover:translate-y-[-1px] active:scale-[0.98]"
+          href="/contact"
+          className="rounded-full border border-textPrimary/20 px-4 py-2 text-xs font-semibold text-textPrimary transition-transform duration-200 hover:translate-y-[-1px] active:scale-[0.98] md:hidden"
         >
-          Get a Free Quote
+          Contact
         </Link>
       </div>
       <nav
