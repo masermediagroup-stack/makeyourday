@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -12,16 +14,18 @@ export default function Footer() {
         </div>
 
         <nav aria-label="Footer links" className="grid grid-cols-2 gap-3 text-sm">
-          <a href="#services" className="text-textPrimary hover:text-primaryGreen">
+          <Link href="/services" className="text-textPrimary hover:text-primaryGreen">
             Services
-          </a>
-          <a href="#portfolio" className="text-textPrimary hover:text-primaryGreen">
+          </Link>
+          <Link href="/portfolio" className="text-textPrimary hover:text-primaryGreen">
             Portfolio
-          </a>
-          <a href="#contact" className="text-textPrimary hover:text-primaryGreen">
+          </Link>
+          <Link href="/about" className="text-textPrimary hover:text-primaryGreen">
+            About
+          </Link>
+          <Link href="/#contact" className="text-textPrimary hover:text-primaryGreen">
             Contact
-          </a>
-          <span className="text-textMuted">Privacy (coming soon)</span>
+          </Link>
         </nav>
 
         <div className="text-sm text-textMuted">

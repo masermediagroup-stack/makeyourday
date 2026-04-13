@@ -2,15 +2,10 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Droplets, Flower2, Lightbulb, Sprout, Trees } from "lucide-react";
-
-export type Service = {
-  title: string;
-  description: string;
-  icon: "sprout" | "trees" | "droplets" | "flower2" | "lightbulb";
-};
+import type { ServiceItem } from "@/lib/site-data";
 
 type ServicesProps = {
-  services: Service[];
+  services: ServiceItem[];
 };
 
 export default function Services({ services }: ServicesProps) {
