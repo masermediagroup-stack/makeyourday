@@ -52,20 +52,17 @@ const projects = [
   {
     name: "Frisco Residence",
     location: "Frisco, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&w=1200&q=80",
+    imageSrc: "https://picsum.photos/seed/texasgrounds-frisco/1400/1800",
   },
   {
     name: "Southlake Estate",
     location: "Southlake, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1622288432450-277d0fef5ed6?auto=format&fit=crop&w=1200&q=80",
+    imageSrc: "https://picsum.photos/seed/texasgrounds-southlake/1400/1800",
   },
   {
     name: "Allen Garden Court",
     location: "Allen, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1622227922682-56c92e523e0b?auto=format&fit=crop&w=1200&q=80",
+    imageSrc: "https://picsum.photos/seed/texasgrounds-allen/1400/1800",
   },
 ];
 
@@ -89,7 +86,7 @@ export default function Home() {
     <>
       <Navbar links={navLinks} />
       <main>
-        <Hero imageSrc="https://images.unsplash.com/photo-1464532466578-a5f5a4ec56a5?auto=format&fit=crop&w=2200&q=80" />
+        <Hero imageSrc="https://picsum.photos/seed/texasgrounds-hero/2400/1600" />
         <Services services={services} />
         <StatStrip stats={stats} />
         <Portfolio projects={projects} />
