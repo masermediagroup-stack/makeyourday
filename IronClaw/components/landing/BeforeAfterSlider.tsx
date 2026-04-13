@@ -9,7 +9,7 @@ type BeforeAfterSliderProps = {
 };
 
 export function BeforeAfterSlider({ beforeSrc, afterSrc }: BeforeAfterSliderProps) {
-  const [position, setPosition] = useState(58);
+  const [position, setPosition] = useState(100);
   const sliderId = useId();
 
   return (
