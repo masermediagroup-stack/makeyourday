@@ -1,0 +1,37 @@
+.rule {
+  border: 0;
+  border-top: 1px solid var(--border-line);
+  margin: 32px 0;
+}
+
+.hero {
+  margin: 32px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.next {
+  margin-top: 64px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--portfolio-accent);
+  text-decoration: none;
+}
+
+.next:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

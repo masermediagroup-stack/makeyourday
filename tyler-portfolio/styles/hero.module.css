@@ -1,0 +1,82 @@
+.section {
+  position: relative;
+  padding-bottom: 96px;
+}
+
+.pattern {
+  position: absolute;
+  inset: -40px -40px auto auto;
+  width: min(480px, 90vw);
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 24px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.accentRule {
+  width: 64px;
+  height: 2px;
+  background: var(--portfolio-accent);
+  margin: 32px 0;
+}
+
+.lines {
+  max-width: 36rem;
+}
+
+.line {
+  margin: 0;
+}
+
+.ctaRow {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.primaryCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  background: var(--portfolio-accent);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 2px;
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background var(--duration-fast) var(--ease-out-expo);
+}
+
+.primaryCta:hover {
+  background: var(--portfolio-accent-hover);
+}
+
+.ghost {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 12px 8px;
+  border-bottom: 2px solid transparent;
+  transition:
+    color var(--duration-fast) var(--ease-out-expo),
+    border-color var(--duration-fast) var(--ease-out-expo);
+}
+
+.ghost:hover {
+  color: var(--portfolio-accent);
+  border-color: var(--portfolio-accent);
+}

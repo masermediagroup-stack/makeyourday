@@ -1,0 +1,39 @@
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 2px;
+  transition:
+    transform var(--duration-slow) var(--ease-out-expo),
+    box-shadow var(--duration-slow) var(--ease-out-expo);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px var(--portfolio-accent-glow);
+}
+
+.media {
+  position: relative;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mediaInner {
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+}
+
+.card:hover .mediaInner {
+  transform: scale(1.03);
+}
+
+.meta {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  color: var(--text-primary);
+}
