@@ -1,8 +1,9 @@
 import { BellSimple, FadersHorizontal, MagnifyingGlass, SidebarSimple } from '@phosphor-icons/react'
-import type { Dispatch, SetStateAction } from 'react'
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import { Button } from '../ui/button'
 import type { DashboardPage, DashboardTool, ViewState } from '../../types/dashboard'
 import { cn } from '../../lib/utils'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 
 type TopbarProps = {
   onToggleSidebar: () => void
@@ -31,6 +32,9 @@ export function Topbar({
   onToolChange,
 }: TopbarProps) {
   const pageMeta = pageTitles[activePage]
+  const [period, setPeriod] = useState('8w')
+  const [compareMode, setCompareMode] = useState('prev')
+  const [segment, setSegment] = useState('enterprise')
 
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--bg)]/95 backdrop-blur-sm">
@@ -102,36 +106,51 @@ export function Topbar({
           <label className="sr-only" htmlFor="view-state">
             Dashboard view state
           </label>
-          <select
-            id="view-state"
-            value={viewState}
-            onChange={(event) => onViewStateChange(event.target.value as ViewState)}
-            className="rounded-md border border-[var(--line)] bg-[var(--surface)] px-2 py-2 text-xs font-medium text-[var(--text)]"
-          >
-            <option value="ready">Ready</option>
-            <option value="loading">Loading</option>
-            <option value="empty">Empty</option>
-            <option value="error">Error</option>
-          </select>
+          <Select value={viewState} onValueChange={(value) => onViewStateChange(value as ViewState)}>
+            <SelectTrigger id="view-state" className="w-[122px]">
+              <SelectValue placeholder="Dashboard state" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ready">Ready</SelectItem>
+              <SelectItem value="loading">Loading</SelectItem>
+              <SelectItem value="empty">Empty</SelectItem>
+              <SelectItem value="error">Error</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[var(--line)] pt-3">
           <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]">Global controls</span>
-          <select className="h-9 rounded-[8px] border border-[var(--line)] bg-[var(--surface)] px-2 text-xs text-[var(--text)]">
-            <option>Last 8 weeks</option>
-            <option>Last 30 days</option>
-            <option>Quarter to date</option>
-          </select>
-          <select className="h-9 rounded-[8px] border border-[var(--line)] bg-[var(--surface)] px-2 text-xs text-[var(--text)]">
-            <option>Compare: previous period</option>
-            <option>Compare: same quarter last year</option>
-            <option>No comparison</option>
-          </select>
-          <select className="h-9 rounded-[8px] border border-[var(--line)] bg-[var(--surface)] px-2 text-xs text-[var(--text)]">
-            <option>Segment: Enterprise</option>
-            <option>Segment: Mid-market</option>
-            <option>Segment: All accounts</option>
-          </select>
+          <Select value={period} onValueChange={setPeriod}>
+            <SelectTrigger className="w-[148px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="8w">Last 8 weeks</SelectItem>
+              <SelectItem value="30d">Last 30 days</SelectItem>
+              <SelectItem value="qtd">Quarter to date</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={compareMode} onValueChange={setCompareMode}>
+            <SelectTrigger className="w-[220px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="prev">Compare: previous period</SelectItem>
+              <SelectItem value="lastYear">Compare: same quarter last year</SelectItem>
+              <SelectItem value="none">No comparison</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={segment} onValueChange={setSegment}>
+            <SelectTrigger className="w-[174px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="enterprise">Segment: Enterprise</SelectItem>
+              <SelectItem value="midmarket">Segment: Mid-market</SelectItem>
+              <SelectItem value="all">Segment: All accounts</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </header>
