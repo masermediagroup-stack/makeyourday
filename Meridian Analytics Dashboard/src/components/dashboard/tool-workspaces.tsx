@@ -18,7 +18,7 @@ const panelMotion = {
 
 function SnapshotPanel() {
   return (
-    <Card className="p-6 md:p-8">
+    <Card variant="interactive" className="p-6 md:p-8">
       <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">Quarter review</p>
       <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text)]">Q2 snapshot workspace</h2>
       <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -27,7 +27,7 @@ function SnapshotPanel() {
           ['Conversion', '47.2% weighted close rate'],
           ['Retention pressure', '2.8% logo churn'],
         ].map(([title, body]) => (
-          <Card key={title} className="bg-[var(--surface-muted)] p-4">
+          <Card key={title} variant="subtle" className="p-4">
             <p className="text-sm font-semibold text-[var(--text)]">{title}</p>
             <p className="mt-2 text-sm text-[var(--text-muted)]">{body}</p>
           </Card>
@@ -39,7 +39,7 @@ function SnapshotPanel() {
 
 function SearchPanel() {
   return (
-    <Card className="p-6 md:p-8">
+    <Card variant="interactive" className="p-6 md:p-8">
       <div className="flex items-center gap-3">
         <MagnifyingGlass size={20} weight="duotone" className="text-[var(--teal)]" />
         <h2 className="text-2xl font-semibold tracking-tight text-[var(--text)]">Search workspace</h2>
@@ -63,7 +63,7 @@ function SearchPanel() {
 
 function FiltersPanel() {
   return (
-    <Card className="p-6 md:p-8">
+    <Card variant="interactive" className="p-6 md:p-8">
       <div className="flex items-center gap-3">
         <SlidersHorizontal size={20} weight="duotone" className="text-[var(--teal)]" />
         <h2 className="text-2xl font-semibold tracking-tight text-[var(--text)]">Filter workspace</h2>
@@ -93,7 +93,7 @@ function FiltersPanel() {
 
 function NotificationsPanel() {
   return (
-    <Card className="p-6 md:p-8">
+    <Card variant="interactive" className="p-6 md:p-8">
       <div className="flex items-center gap-3">
         <BellSimple size={20} weight="duotone" className="text-[var(--teal)]" />
         <h2 className="text-2xl font-semibold tracking-tight text-[var(--text)]">Notification center</h2>
@@ -104,7 +104,7 @@ function NotificationsPanel() {
           ['Expansion quote approved by Nadia Keller', '18m ago'],
           ['Model v4.3 confidence drift corrected', '52m ago'],
         ].map(([message, time]) => (
-          <Card key={message} className="bg-[var(--surface-muted)] p-4">
+          <Card key={message} variant="subtle" className="p-4">
             <div className="flex items-center justify-between gap-2">
               <p className="text-sm text-[var(--text)]">{message}</p>
               <p className="text-xs uppercase tracking-[0.08em] text-[var(--text-muted)]">{time}</p>

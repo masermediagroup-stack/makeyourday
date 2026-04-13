@@ -34,7 +34,8 @@ export function Topbar({
 
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--bg)]/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-4 py-4 md:px-8">
+      <div className="mx-auto max-w-[1400px] px-4 py-4 md:px-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Button
             variant="subtle"
@@ -111,6 +112,25 @@ export function Topbar({
             <option value="loading">Loading</option>
             <option value="empty">Empty</option>
             <option value="error">Error</option>
+          </select>
+        </div>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[var(--line)] pt-3">
+          <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]">Global controls</span>
+          <select className="h-9 rounded-[8px] border border-[var(--line)] bg-[var(--surface)] px-2 text-xs text-[var(--text)]">
+            <option>Last 8 weeks</option>
+            <option>Last 30 days</option>
+            <option>Quarter to date</option>
+          </select>
+          <select className="h-9 rounded-[8px] border border-[var(--line)] bg-[var(--surface)] px-2 text-xs text-[var(--text)]">
+            <option>Compare: previous period</option>
+            <option>Compare: same quarter last year</option>
+            <option>No comparison</option>
+          </select>
+          <select className="h-9 rounded-[8px] border border-[var(--line)] bg-[var(--surface)] px-2 text-xs text-[var(--text)]">
+            <option>Segment: Enterprise</option>
+            <option>Segment: Mid-market</option>
+            <option>Segment: All accounts</option>
           </select>
         </div>
       </div>

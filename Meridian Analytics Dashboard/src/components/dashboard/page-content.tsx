@@ -42,7 +42,7 @@ function Panel({
 }) {
   return (
     <FadeUp>
-      <Card className="p-6 md:p-8 hover:shadow-[var(--shadow-lift)]">
+      <Card variant="interactive" className="p-6 md:p-8">
         <p className="text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]">{eyebrow}</p>
         <h2 className="mt-2 text-[clamp(1.35rem,2vw,1.9rem)] font-semibold tracking-tight text-[var(--text)]">
           {title}
@@ -75,7 +75,7 @@ function ForecastingPage() {
             ['Conservative', '42.9% close rate', 'neutral'],
             ['Aggressive', '53.6% close rate', 'navy'],
           ].map(([label, detail, tone]) => (
-            <Card key={label} className="p-4 hover:-translate-y-[1px]">
+            <Card key={label} variant="interactive" className="p-4">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold text-[var(--text)]">{label}</p>
                 <Badge tone={tone as 'teal' | 'neutral' | 'navy'}>{label}</Badge>
@@ -131,7 +131,7 @@ function WorkspacePage() {
             ['Renewal narrative refresh', 'Owner: Elena Mirov', 'teal'],
             ['At-risk expansion rescue', 'Owner: Mika Torres', 'navy'],
           ].map(([title, owner, tone]) => (
-            <Card key={title} className="p-4 hover:-translate-y-[1px]">
+            <Card key={title} variant="interactive" className="p-4">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-[var(--text)]">{title}</p>
                 <Badge tone={tone as 'success' | 'teal' | 'navy'}>{tone}</Badge>
@@ -161,7 +161,7 @@ function ActivityPage() {
               'Forecast model v4.3 promoted to default workspace.',
               'Sandbox exports currently queued with priority drain.',
             ].map((note) => (
-              <Card key={note} className="bg-[var(--surface-muted)] p-4 hover:-translate-y-[1px]">
+              <Card key={note} variant="subtle" className="p-4">
                 <p className="text-sm text-[var(--text-muted)]">{note}</p>
               </Card>
             ))}
@@ -208,7 +208,7 @@ function SettingsPage() {
             ['Attribution model', 'Weighted multi-touch'],
             ['Notification digest', 'Hourly'],
           ].map(([label, value]) => (
-            <Card key={label} className="p-4 hover:-translate-y-[1px]">
+            <Card key={label} variant="interactive" className="p-4">
               <p className="text-xs uppercase tracking-[0.08em] text-[var(--text-muted)]">{label}</p>
               <p className="mt-2 text-sm font-medium text-[var(--text)]">{value}</p>
             </Card>
@@ -216,7 +216,7 @@ function SettingsPage() {
         </div>
       </Panel>
       <FadeUp>
-        <Card className="flex flex-wrap items-center justify-between gap-3 p-6">
+        <Card variant="interactive" className="flex flex-wrap items-center justify-between gap-3 p-6">
           <div>
             <h3 className="text-lg font-semibold tracking-tight text-[var(--text)]">API credentials</h3>
             <p className="text-sm text-[var(--text-muted)]">

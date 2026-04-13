@@ -4,6 +4,7 @@ import { Sidebar } from '../components/dashboard/sidebar'
 import { Topbar } from '../components/dashboard/topbar'
 import { DashboardPageContent } from '../components/dashboard/page-content'
 import { ToolWorkspaces } from '../components/dashboard/tool-workspaces'
+import { Badge } from '../components/ui/badge'
 
 type DashboardLayoutProps = {
   children: ReactNode
@@ -51,6 +52,14 @@ export function DashboardLayout({ children, viewState, onViewStateChange }: Dash
           />
           <main className="mx-auto w-full max-w-[1400px] px-4 py-8 md:px-8">
             {!hasStateLayer && <ToolWorkspaces activeTool={activeTool} />}
+            {!hasStateLayer && (
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <Badge tone="neutral">Region: North America</Badge>
+                <Badge tone="neutral">Segment: Enterprise</Badge>
+                <Badge tone="neutral">Model: Weighted multi-touch</Badge>
+                <Badge tone="neutral">Lifecycle: Renewal window</Badge>
+              </div>
+            )}
             {hasStateLayer ? children : <DashboardPageContent page={activePage} />}
           </main>
         </div>

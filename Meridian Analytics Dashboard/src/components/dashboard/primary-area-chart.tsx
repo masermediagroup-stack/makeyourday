@@ -14,7 +14,7 @@ function currency(value: number) {
 export function PrimaryAreaChart({ data }: PrimaryAreaChartProps) {
   return (
     <FadeUp>
-      <Card className="h-full p-6 hover:shadow-[var(--shadow-lift)]">
+      <Card variant="interactive" className="h-full p-6">
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
             <p className="text-[11px] uppercase tracking-[0.13em] text-[var(--text-muted)]">Primary trend</p>
@@ -32,7 +32,7 @@ export function PrimaryAreaChart({ data }: PrimaryAreaChartProps) {
                   <stop offset="100%" stopColor="#1ea5a1" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid stroke="var(--line)" strokeDasharray="3 6" vertical={false} />
+              <CartesianGrid stroke="var(--line)" strokeDasharray="2 7" strokeOpacity={0.6} vertical={false} />
               <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: '#66707c', fontSize: 12 }} />
               <YAxis
                 yAxisId="mrr"
@@ -54,6 +54,7 @@ export function PrimaryAreaChart({ data }: PrimaryAreaChartProps) {
                   borderRadius: 10,
                   border: '1px solid var(--line)',
                   background: 'var(--surface)',
+                  boxShadow: 'var(--shadow-soft)',
                 }}
               />
               <Area

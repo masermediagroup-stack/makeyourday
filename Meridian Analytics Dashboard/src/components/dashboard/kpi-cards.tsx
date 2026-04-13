@@ -16,8 +16,8 @@ export function KpiCards({ items }: KpiCardsProps) {
         const positive = item.trend === 'up'
         return (
           <StaggerItem key={item.id}>
-            <motion.div layout whileHover={{ y: -2 }} transition={motionTokens.spring}>
-              <Card className="p-5 hover:shadow-[var(--shadow-lift)]">
+            <motion.div layout transition={motionTokens.spring}>
+              <Card variant="interactive" className="p-5">
                 <p className="text-[11px] uppercase tracking-[0.13em] text-[var(--text-muted)]">{item.label}</p>
                 <p
                   className="mt-3 text-[42px] leading-[0.95] tracking-tight text-[var(--text)] [font-variant-numeric:tabular-nums]"
@@ -38,6 +38,7 @@ export function KpiCards({ items }: KpiCardsProps) {
                   </span>
                   <span className="text-xs text-[var(--text-muted)]">{item.note}</span>
                 </div>
+                <p className="mt-1 text-[11px] text-[var(--text-muted)]">vs prior 8 weeks</p>
               </Card>
             </motion.div>
           </StaggerItem>
