@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+:root {
+  --font-sans: 'Satoshi', 'Plus Jakarta Sans', 'SF Pro Display', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  --font-stat: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface-muted: #f9f9f8;
+  --text: #1d242d;
+  --text-muted: #66707c;
+  --line: #e8e5de;
+  --line-strong: #d8d3ca;
+  --navy: #20344e;
+  --teal: #1ea5a1;
+  --teal-soft: #daf3f0;
+  --danger: #b34b45;
+  --danger-soft: #fae8e7;
+  --success: #356244;
+  --success-soft: #e8f2ea;
+  --radius-lg: 12px;
+  --radius-md: 10px;
+  --duration-standard: 260ms;
+  --ease-standard: cubic-bezier(0.32, 0.72, 0, 1);
+  --shadow-soft: 0 10px 28px -18px rgba(24, 37, 56, 0.2);
+  --shadow-lift: 0 20px 38px -24px rgba(24, 37, 56, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100dvh;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'ss01' on, 'ss02' on, 'cv11' on;
+}
+
+.grain-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(32, 52, 78, 0.14), transparent 33%),
+    radial-gradient(circle at 85% 30%, rgba(30, 165, 161, 0.14), transparent 42%);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
