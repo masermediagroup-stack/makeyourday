@@ -34,7 +34,7 @@ export default function AboutPage() {
           eyebrow="About"
           title="A Texas crew focused on long-term landscape quality."
           description="TexasGrounds was built for homeowners and property teams that need design precision and consistent maintenance at premium standards."
-          imageSrc="https://picsum.photos/seed/texasgrounds-about-hero/2200/1500"
+          imageSrc="/photos/claude-laprise-_GvVDmvh81I-unsplash.jpg"
           imageAlt="TexasGrounds crew planning a high-end landscape installation"
         />
 

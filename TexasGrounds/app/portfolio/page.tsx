@@ -14,7 +14,7 @@ export default function PortfolioPage() {
           eyebrow="Portfolio"
           title="Landscapes designed and maintained across DFW."
           description="A selection of residential grounds where structure, planting, and long-term care come together."
-          imageSrc="https://picsum.photos/seed/texasgrounds-portfolio-hero/2200/1500"
+          imageSrc="/photos/naoki-suzuki-ZuaCKSnNlFI-unsplash.jpg"
           imageAlt="Completed luxury landscape project in the DFW area"
         />
 

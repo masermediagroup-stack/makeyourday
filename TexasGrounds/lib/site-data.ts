@@ -60,38 +60,32 @@ export const projects: PortfolioItem[] = [
   {
     name: "Frisco Residence",
     location: "Frisco, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1599685315640-ec2f876163e8?auto=format&fit=crop&w=1400&q=80",
+    imageSrc: "/photos/naoki-suzuki-KrWucjRs2bY-unsplash.jpg",
   },
   {
     name: "Southlake Estate",
     location: "Southlake, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1625246333195-78d73c0f2b57?auto=format&fit=crop&w=1400&q=80",
+    imageSrc: "/photos/martin-wemyss-0_ogdiw0vBE-unsplash.jpg",
   },
   {
     name: "Allen Garden Court",
     location: "Allen, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&w=1400&q=80",
+    imageSrc: "/photos/kevin-13iy3FucuFo-unsplash.jpg",
   },
   {
     name: "Westlake Ranch Entry",
     location: "Westlake, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1558904541-efa843a96f01?auto=format&fit=crop&w=1400&q=80",
+    imageSrc: "/photos/sophi-raju-YJ1HVNsoEMo-unsplash.jpg",
   },
   {
     name: "Highland Park Courtyard",
     location: "Dallas, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1472220625704-91e1462799b2?auto=format&fit=crop&w=1400&q=80",
+    imageSrc: "/photos/tracy-brower-7EiPQEd0gxk-unsplash.jpg",
   },
   {
     name: "River Crest Grounds",
     location: "Fort Worth, TX",
-    imageSrc:
-      "https://images.unsplash.com/photo-1622396483447-7060d7a1ec71?auto=format&fit=crop&w=1400&q=80",
+    imageSrc: "/photos/valeria-nikitina-6StRLC7N9Tw-unsplash.jpg",
   },
 ];
 

@@ -13,7 +13,7 @@ export default function Home() {
     <>
       <Navbar links={navLinks} />
       <main>
-        <Hero imageSrc="https://picsum.photos/seed/texasgrounds-hero/2400/1600" />
+        <Hero imageSrc="/photos/michael-smith-bsld7GjQwjI-unsplash.jpg" />
         <Services services={services} />
         <StatStrip stats={stats} />
         <Portfolio projects={projects.slice(0, 3)} />

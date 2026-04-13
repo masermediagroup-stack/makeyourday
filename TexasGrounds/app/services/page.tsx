@@ -37,7 +37,7 @@ export default function ServicesPage() {
           eyebrow="Services"
           title="DFW landscaping services tailored to your property."
           description="We combine editorial-grade planting design with reliable weekly maintenance so your grounds stay composed year-round."
-          imageSrc="https://picsum.photos/seed/texasgrounds-services-hero/2200/1500"
+          imageSrc="/photos/naoki-suzuki-uqgYI_730jE-unsplash.jpg"
           imageAlt="TexasGrounds team shaping premium front-yard landscaping"
         />
 
