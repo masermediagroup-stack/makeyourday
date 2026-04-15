@@ -3,7 +3,7 @@
   left: 0;
   top: 0;
   height: 100vh;
-  width: 320px;
+  width: 288px;
   padding: 48px;
   background: var(--bg-primary);
   border-right: 1px solid var(--border-line);
@@ -25,7 +25,7 @@
 }
 
 .bio {
-  max-width: 240px;
+  max-width: 216px;
   line-height: 1.6;
   color: var(--text-muted);
 }
@@ -35,7 +35,7 @@
 }
 
 .name {
-  font-family: var(--font-syne), sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -88,7 +88,7 @@
 .subList {
   list-style: none;
   padding: 0 0 0 16px;
-  margin: 8px 0 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -97,10 +97,12 @@
   opacity: 0;
   transition:
     max-height 0.4s var(--ease-out-expo),
-    opacity 0.35s var(--ease-out-expo);
+    opacity 0.35s var(--ease-out-expo),
+    margin-top 0.35s var(--ease-out-expo);
 }
 
 .subListOpen {
+  margin-top: 8px;
   max-height: 220px;
   opacity: 1;
 }
@@ -164,11 +166,14 @@
   color: var(--portfolio-accent);
 }
 
+.contactLinkActive {
+  color: var(--portfolio-accent);
+}
+
 .badge {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
 }
 
 .dot {
@@ -176,11 +181,34 @@
   height: 8px;
   border-radius: 50%;
   background: #22c55e;
+  flex-shrink: 0;
+  animation: availabilityPulse 3s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45);
+}
+
+@keyframes availabilityPulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
+    opacity: 1;
+    box-shadow: none;
+  }
 }
 
 @media (max-width: 1023px) {
   .aside {
-    width: 240px;
+    width: 216px;
     padding: 32px 24px;
   }
 }

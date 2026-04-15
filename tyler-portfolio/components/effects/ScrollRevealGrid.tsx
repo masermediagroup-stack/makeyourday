@@ -21,17 +21,23 @@ export function ScrollRevealGrid({
 
     const cards = el.querySelectorAll("[data-reveal-card]");
     const ctx = gsap.context(() => {
-      gsap.from(cards, {
-        scrollTrigger: {
-          trigger: el,
-          start: "top 80%",
-        },
-        y: 60,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.12,
-        ease: "power3.out",
-      });
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: "top 80%",
+          },
+          onComplete: () => {
+            gsap.set(cards, { clearProps: "transform" });
+          },
+        })
+        .from(cards, {
+          y: 60,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: "power3.out",
+        });
     }, el);
 
     return () => ctx.revert();

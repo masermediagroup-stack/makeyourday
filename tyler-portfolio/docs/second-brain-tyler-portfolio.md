@@ -6,7 +6,7 @@ Personal portfolio website for Tyler Vea. Editorial minimalist design inspired b
 
 ## Key Decisions
 
-- **Fonts:** Syne (display, `next/font/google`) + **DM Sans** as body via `next/font/google` (swap in self-hosted General Sans under `public/fonts/GeneralSans` when files are added)
+- **Fonts:** **Raleway** (display / `.display-*`, `--font-display`) + **Roboto** (body / UI, `--font-body`) via `next/font/google`
 - **Colors:** White bg, black text, Electric Violet (#7C3AED) accents
 - **Layout:** Fixed left sidebar (320px) + scrollable right content
 - **Effects:** Preloader (counter), noise grain overlay, Lenis smooth scroll — NO custom cursor

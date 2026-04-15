@@ -17,9 +17,8 @@
   cursor: pointer;
   background: var(--bg-secondary);
   border-radius: 2px;
-  transition:
-    background var(--duration-normal) var(--ease-out-expo),
-    transform var(--duration-normal) var(--ease-out-expo);
+  /* No transform transition — GSAP scroll reveal sets translateY on this button. */
+  transition: background var(--duration-normal) var(--ease-out-expo);
   text-align: left;
 }
 

@@ -10,6 +10,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       defaultTheme="light"
       enableSystem={false}
       forcedTheme="light"
+      enableColorScheme={false}
     >
       {children}
     </NextThemesProvider>

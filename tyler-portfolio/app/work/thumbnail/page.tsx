@@ -18,7 +18,10 @@ export default function ThumbnailPage() {
       <header className={sub.header}>
         <h1 className="display-lg text-[var(--text-primary)]">Thumbnail</h1>
         <p className="body-lg mt-6 max-w-3xl text-[var(--text-secondary)]">
-          {site.thumbnailsIntro}
+          {site.thumbnailsIntro}{" "}
+          <span className="text-[var(--portfolio-accent)]">
+            {site.thumbnailsIntroAccent}
+          </span>
         </p>
       </header>
       <ScrollRevealGrid>

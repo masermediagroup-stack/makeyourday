@@ -3,8 +3,11 @@
 import { site } from "@/data/site";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
+import { cn } from "@/lib/utils";
 
 import styles from "@/styles/sidebar.module.css";
 
@@ -63,6 +66,7 @@ function BrandDesignNav({
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
@@ -72,12 +76,14 @@ export function Sidebar() {
       <div className={styles.block}>
         <Link href="/" aria-label="Home">
           <Image
-            src="/images/logo-mark.svg"
+            src="/images/logo-mark-black.png"
             alt=""
-            width={44}
-            height={44}
+            width={3418}
+            height={1506}
             priority
-            className="h-11 w-auto"
+            quality={100}
+            sizes="(max-width: 1023px) 80px, 96px"
+            className="h-10 w-auto"
           />
         </Link>
 
@@ -138,11 +144,23 @@ export function Sidebar() {
           >
             {site.linkedInLabel}
           </a>
-        </div>
-
-        <div className={styles.badge}>
-          <span className={styles.dot} aria-hidden />
-          <span className={`label-sm ${styles.navMuted}`}>{site.availability}</span>
+          <div className={styles.badge}>
+            <span className={styles.dot} aria-hidden />
+            <span className={`label-sm ${styles.navMuted}`}>{site.availability}</span>
+          </div>
+          <InteractiveHoverButton
+            type="button"
+            onClick={() => router.push("/contact")}
+            aria-label={`${site.contactCta} — contact page`}
+            className={cn(
+              "w-full max-w-full border-[var(--border-line)] text-sm text-[var(--text-primary)] shadow-none",
+              pathname === "/contact" &&
+                "ring-2 ring-[var(--portfolio-accent)] ring-offset-2 ring-offset-[var(--bg-primary)]",
+            )}
+            aria-current={pathname === "/contact" ? "page" : undefined}
+          >
+            {site.contactCta}
+          </InteractiveHoverButton>
         </div>
       </div>
     </aside>

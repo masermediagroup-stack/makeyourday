@@ -73,7 +73,7 @@ export function LogoGrid({ items }: { items: LogoItem[] }) {
                 )}
               </div>
               <p className="body-md text-[var(--text-primary)]">{active.client}</p>
-              <p className="body-sm text-[var(--text-muted)]">{active.year}</p>
+              <p className="body-sm text-[var(--text-muted)]">Designed in {active.year}</p>
             </div>
           ) : null}
         </DialogContent>

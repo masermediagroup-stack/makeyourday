@@ -3,12 +3,13 @@
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 
+import loaderStyles from "@/styles/preloader-loader.module.css";
+
 const STORAGE_KEY = "tyler-portfolio-preloader";
 
 export function Preloader() {
   const [show, setShow] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const countRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -19,29 +20,20 @@ export function Preloader() {
   }, []);
 
   useEffect(() => {
-    if (!show || !rootRef.current || !countRef.current) return;
+    if (!show || !rootRef.current) return;
 
     const ctx = gsap.context(() => {
-      const counter = { value: 0 };
       const tl = gsap.timeline({
         onComplete: () => {
           sessionStorage.setItem(STORAGE_KEY, "1");
         },
       });
 
-      tl.to(counter, {
-        value: 100,
-        duration: 2.5,
-        ease: "power2.out",
-        onUpdate: () => {
-          if (countRef.current) {
-            countRef.current.textContent = `${Math.round(counter.value)}`;
-          }
-        },
-      }).to(rootRef.current, {
+      tl.to(rootRef.current, {
         yPercent: -100,
         duration: 0.8,
         ease: "power4.out",
+        delay: 2.4,
         onComplete: () => {
           setShow(false);
         },
@@ -61,13 +53,8 @@ export function Preloader() {
       aria-live="polite"
       aria-label="Loading"
     >
-      <span
-        ref={countRef}
-        className="font-[family-name:var(--font-syne)] text-[clamp(4rem,15vw,10rem)] font-extrabold leading-none"
-      >
-        0
-      </span>
-      <span className="label-sm mt-6 tracking-[0.15em] text-[var(--text-muted)]">
+      <div className={loaderStyles.loader} aria-hidden />
+      <span className="label-sm mt-8 tracking-[0.15em] text-[var(--text-muted)]">
         TYLER VEA
       </span>
     </div>

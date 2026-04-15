@@ -14,9 +14,7 @@
   background: transparent;
   border-radius: 2px;
   overflow: hidden;
-  transition:
-    transform var(--duration-normal) var(--ease-out-expo),
-    box-shadow var(--duration-normal) var(--ease-out-expo);
+  transition: box-shadow var(--duration-normal) var(--ease-out-expo);
 }
 
 .cell:hover {

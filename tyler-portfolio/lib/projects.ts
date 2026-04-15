@@ -1,4 +1,4 @@
-import type { Project, ProjectCategory } from "@/data/projects";
+import type { Project, ProjectCategory, WebDesignGroup } from "@/data/projects";
 import { projects } from "@/data/projects";
 
 export function getProjectBySlug(slug: string): Project | undefined {
@@ -11,6 +11,21 @@ export function getFeaturedProjects(): Project[] {
 
 export function getProjectsByCategory(category: ProjectCategory): Project[] {
   return projects.filter((p) => p.category === category);
+}
+
+/** Preserves order from `projects` within each group. */
+export function partitionWebDesignProjects(
+  list: Project[],
+): Record<WebDesignGroup, Project[]> {
+  const scope: Project[] = [];
+  const client: Project[] = [];
+  for (const p of list) {
+    if (p.category !== "web-design") continue;
+    const g: WebDesignGroup = p.webDesignGroup ?? "scope";
+    if (g === "client") client.push(p);
+    else scope.push(p);
+  }
+  return { scope, client };
 }
 
 export function getNextProjectInCategory(

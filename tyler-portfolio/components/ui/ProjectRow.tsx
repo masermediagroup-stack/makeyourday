@@ -12,7 +12,9 @@ import styles from "@/styles/project-row.module.css";
 export function ProjectRow({ project }: { project: Project }) {
   const showLive = Boolean(project.liveUrl);
   const showCase =
-    project.scope !== "external-reference" && project.category === "web-design";
+    project.scope !== "external-reference" &&
+    project.category === "web-design" &&
+    !project.hideCaseStudyRow;
 
   return (
     <div className={styles.row} data-reveal-card>

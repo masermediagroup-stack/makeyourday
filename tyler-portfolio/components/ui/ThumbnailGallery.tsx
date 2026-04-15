@@ -44,7 +44,7 @@ export function ThumbnailGallery({ items }: { items: ThumbnailItem[] }) {
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-[var(--bg-tertiary)]">
-                  <span className="font-[family-name:var(--font-syne)] text-lg font-bold text-[var(--text-muted)]">
+                  <span className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--text-muted)]">
                     {getInitials(item.title, 4)}
                   </span>
                 </div>
@@ -83,7 +83,7 @@ export function ThumbnailGallery({ items }: { items: ThumbnailItem[] }) {
                 />
               ) : (
                 <div className="flex h-full min-h-[200px] items-center justify-center bg-[var(--bg-tertiary)] p-8">
-                  <span className="font-[family-name:var(--font-syne)] text-2xl font-bold text-[var(--text-muted)]">
+                  <span className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--text-muted)]">
                     {getInitials(active.title, 4)}
                   </span>
                 </div>

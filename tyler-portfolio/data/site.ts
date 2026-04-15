@@ -3,7 +3,7 @@ export const site = {
   titleLine: "Creative Technologist",
   subtitleLine: "& Brand Strategist",
   shortBio:
-    "Designer from Central Texas building brands, websites, and visual identities for startups and creators. Currently co-founding Maser Media.",
+    "Designer from Central Texas building brands, websites, and visual identities for startups and creators. Taking jobs and freelance projects alongside co-founding Maser Media.",
   heroTagline: "Creative Technologist & Brand Strategist",
   heroLines: [
     "7 years crafting visual identities,",
@@ -19,7 +19,8 @@ A natural collaborator and idea generator who thrives in fast-paced creative env
   twitterLabel: "Twitter/X",
   twitterUrl: "https://x.com/TylerVDesign",
   linkedInLabel: "LinkedIn",
-  linkedInUrl: "https://www.linkedin.com/in/tylervea",
+  linkedInUrl: "https://www.linkedin.com/in/tyler-vea-656549223/",
+  contactCta: "Contact me",
   availability: "Available for projects",
   navSectionWork: "Work",
   webDesignDisclaimer: [
@@ -34,6 +35,8 @@ A natural collaborator and idea generator who thrives in fast-paced creative env
     "A well-crafted logo leaves a positive and lasting first impression, conveying professionalism and trustworthiness. It's often the first thing people notice about a company — the initial point of contact, whether on a business card, website, or product packaging.",
   thumbnailsIntro:
     "Thumbnails serve as the first visual impression viewers encounter in their YouTube timeline. Thoughtfully designed thumbnails that faithfully reflect your video draw in viewers and enhance comprehension. The choice of colors, text, and facial expressions wield considerable influence over click-through rate and ultimately dictate video success.",
+  thumbnailsIntroAccent:
+    "100+ million views globally for clients with an average ctr increase of 8.5%.",
   socialMediaIntro:
     "Social assets, campaigns, and platform-native graphics crafted for clarity, consistency, and conversion.",
 } as const;

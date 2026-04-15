@@ -30,11 +30,14 @@ export function MobileNav() {
       <div className={styles.bar}>
         <Link href="/" aria-label="Home" onClick={() => setOpen(false)}>
           <Image
-            src="/images/logo-mark.svg"
+            src="/images/logo-mark-black.png"
             alt=""
-            width={36}
-            height={36}
+            width={3418}
+            height={1506}
             priority
+            quality={100}
+            sizes="80px"
+            className="h-8 w-auto"
           />
         </Link>
         <button
@@ -77,6 +80,13 @@ export function MobileNav() {
               ))}
             </ul>
           </nav>
+          <Link
+            href="/contact"
+            className={`body-sm ${sidebarStyles.contactLink} ${pathname === "/contact" ? sidebarStyles.contactLinkActive : ""}`}
+            onClick={() => setOpen(false)}
+          >
+            {site.contactCta}
+          </Link>
           <a className={`body-sm ${sidebarStyles.contactLink}`} href={`mailto:${site.email}`}>
             {site.email}
           </a>

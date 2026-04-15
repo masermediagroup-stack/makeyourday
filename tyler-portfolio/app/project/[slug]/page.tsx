@@ -57,18 +57,40 @@ export default async function ProjectPage({ params }: Props) {
 
       <p className="body-lg text-[var(--text-secondary)]">{project.description}</p>
 
-      {project.liveUrl ? (
-        <p className="mt-8">
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex rounded-[2px] bg-[var(--portfolio-accent)] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[var(--portfolio-accent-hover)]"
-          >
-            Visit Live Site ↗
-          </a>
-        </p>
-      ) : null}
+      {(() => {
+        const { liveUrl, caseStudyUrl } = project;
+        if (!liveUrl && !caseStudyUrl) return null;
+
+        const btnClass =
+          "inline-flex rounded-[2px] bg-[var(--portfolio-accent)] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[var(--portfolio-accent-hover)]";
+
+        if (liveUrl && caseStudyUrl && liveUrl !== caseStudyUrl) {
+          return (
+            <div className="mt-8 flex flex-wrap items-center gap-6">
+              <a href={liveUrl} target="_blank" rel="noreferrer" className={btnClass}>
+                Visit Live Site ↗
+              </a>
+              <a
+                href={caseStudyUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm font-semibold text-[var(--portfolio-accent)] underline-offset-4 transition-colors hover:text-[var(--portfolio-accent-hover)] hover:underline"
+              >
+                View case study →
+              </a>
+            </div>
+          );
+        }
+
+        const href = liveUrl ?? caseStudyUrl!;
+        return (
+          <p className="mt-8">
+            <a href={href} target="_blank" rel="noreferrer" className={btnClass}>
+              Visit Live Site ↗
+            </a>
+          </p>
+        );
+      })()}
 
       {project.videoUrl ? (
         <div className="mt-10">

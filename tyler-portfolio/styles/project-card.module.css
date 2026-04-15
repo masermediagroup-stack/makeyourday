@@ -3,9 +3,8 @@
   text-decoration: none;
   color: inherit;
   border-radius: 2px;
-  transition:
-    transform var(--duration-slow) var(--ease-out-expo),
-    box-shadow var(--duration-slow) var(--ease-out-expo);
+  /* Outer link: no transform transition (avoids fighting GSAP if this card is ever scroll-revealed). */
+  transition: box-shadow var(--duration-slow) var(--ease-out-expo);
 }
 
 .card:hover {

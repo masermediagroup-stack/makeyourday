@@ -19,6 +19,8 @@ export function ProjectCard({ project }: { project: Project }) {
         gradientFrom="rgba(124, 58, 237, 0.35)"
         gradientTo="rgba(237, 233, 254, 0.9)"
         gradientSize={220}
+        gradientColor="rgba(124, 58, 237, 0.28)"
+        gradientOpacity={0.42}
       >
         <div className={styles.media}>
           <div className={styles.mediaInner}>

@@ -1,5 +1,6 @@
 .section {
-  padding-bottom: 128px;
+  /* Generous gap before footer globe + “Clients Satisfied Globally” */
+  padding-bottom: clamp(7rem, 22vh, 14rem);
 }
 
 .stats {
@@ -7,6 +8,23 @@
   flex-direction: column;
   gap: 8px;
   margin-bottom: 32px;
+}
+
+.statsRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .statsRow {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
 }
 
 .grid {

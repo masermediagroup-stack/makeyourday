@@ -57,6 +57,13 @@ Runs Vite and opens the app in a native window. Data still uses `localStorage` i
 npm run tauri:build
 ```
 
-Artifacts appear under `src-tauri/target/release/bundle/` — on Windows, the NSIS setup `.exe` is typically in the `nsis` subfolder. Install that file to add **Make Your Day** like any other Windows program.
+Build output (after Rust finishes compiling):
 
-`src-tauri/target/` is gitignored; commit the `src-tauri/` sources and `Cargo.lock` after a successful build so others can reproduce builds.
+- **Windows (NSIS):** `src-tauri/target/release/bundle/nsis/` — run the `*-setup.exe` to install **Make Your Day** like any other Windows program (no dev server at runtime).
+- Other platforms may also emit bundles under `src-tauri/target/release/bundle/` when you build there.
+
+`src-tauri/target/` is gitignored. After a successful `tauri:build` on your machine, commit `src-tauri/Cargo.lock` if it was generated, so dependency versions are pinned for others.
+
+### Data and privacy (desktop and web)
+
+Events are stored only on your device (`localStorage` in the browser, or the same mechanism scoped to the Tauri WebView profile). This project does not sync to our servers or require an account. Clearing site/app storage or uninstalling can remove local data unless you keep your own backups.

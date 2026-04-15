@@ -6,9 +6,7 @@
   border-radius: 2px;
   text-decoration: none;
   color: inherit;
-  transition:
-    background var(--duration-normal) var(--ease-out-expo),
-    transform var(--duration-normal) var(--ease-out-expo);
+  transition: background var(--duration-normal) var(--ease-out-expo);
   border: 1px solid transparent;
 }
 

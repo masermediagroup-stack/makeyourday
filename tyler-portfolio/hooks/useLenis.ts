@@ -24,6 +24,21 @@ export function useLenis(
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
 
+    ScrollTrigger.scrollerProxy(wrapper, {
+      scrollTop(value) {
+        if (arguments.length && typeof value === "number") {
+          lenis.scrollTo(value, { immediate: true });
+        }
+        return lenis.scroll;
+      },
+      getBoundingClientRect() {
+        return wrapper.getBoundingClientRect();
+      },
+      scrollHeight: () => content.scrollHeight,
+    });
+
+    ScrollTrigger.defaults({ scroller: wrapper });
+
     lenis.on("scroll", ScrollTrigger.update);
 
     const tick = () => {
@@ -32,8 +47,12 @@ export function useLenis(
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
+    ScrollTrigger.refresh();
+
     return () => {
       gsap.ticker.remove(tick);
+      ScrollTrigger.defaults({ scroller: window });
+      ScrollTrigger.scrollerProxy(wrapper);
       lenis.destroy();
       ScrollTrigger.refresh();
     };
