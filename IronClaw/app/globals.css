@@ -3,19 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --bg: #0f0f10;
-  --surface: #151618;
-  --fg: #ececec;
-  --muted: #a7abad;
-  --line: #2d2f33;
-  --accent: #d96a1d;
+  --bg: #080a0a;
+  --surface: #111514;
+  --fg: #f6f1e8;
+  --muted: #a9b0aa;
+  --line: rgba(255, 255, 255, 0.1);
+  --accent: #f2b146;
+  --ink: #10120f;
 }
 
 body {
   margin: 0;
   color: var(--fg);
   background: var(--bg);
-  font-family: var(--font-outfit), "Segoe UI", sans-serif;
+  font-family: "Outfit", "Segoe UI", sans-serif;
 }
 
 body::before {
@@ -29,6 +30,22 @@ body::before {
   opacity: 0.2;
 }
 
+::selection {
+  color: var(--ink);
+  background: var(--accent);
+}
+
+a {
+  text-decoration: none;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -37,5 +54,194 @@ body::before {
   .brutalist-grid {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cpath d='M56 0H0V56' fill='none' stroke='%23ececec' stroke-opacity='0.06' stroke-width='1'/%3E%3C/svg%3E");
     background-size: 56px 56px;
+  }
+
+  .btn-gradient-accent {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    color: var(--ink);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.32), transparent 38%),
+      linear-gradient(110deg, var(--accent), #ffd47c 48%, #c77b1a);
+    box-shadow:
+      0 16px 40px rgba(242, 177, 70, 0.26),
+      inset 0 1px 0 rgba(255, 255, 255, 0.48);
+  }
+
+  .btn-gradient-dark {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    color: var(--fg);
+    background:
+      linear-gradient(135deg, rgba(246, 241, 232, 0.12), transparent 42%),
+      linear-gradient(115deg, var(--surface), #1f2925 48%, var(--bg));
+    box-shadow:
+      0 14px 36px rgba(0, 0, 0, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  .btn-gradient-accent::before,
+  .btn-gradient-dark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.34), transparent 24%),
+      linear-gradient(100deg, transparent 8%, rgba(255, 255, 255, 0.2) 24%, transparent 44%);
+    opacity: 0;
+    transform: translateX(-20%);
+    transition:
+      opacity 180ms ease,
+      transform 220ms ease;
+  }
+
+  .btn-gradient-accent:hover::before,
+  .btn-gradient-dark:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .btn-gradient-accent:focus-visible,
+  .btn-gradient-dark:focus-visible,
+  .proof-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .proof-button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .proof-button::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    z-index: -1;
+    background:
+      linear-gradient(120deg, transparent 8%, rgba(242, 177, 70, 0.18) 34%, transparent 62%),
+      radial-gradient(circle at var(--proof-x, 50%) var(--proof-y, 50%), rgba(242, 177, 70, 0.2), transparent 34%);
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .proof-button:hover {
+    border-color: rgba(242, 177, 70, 0.5);
+    color: var(--fg);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 38%),
+      linear-gradient(110deg, var(--accent), #ffd47c 48%, #c77b1a);
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.42),
+      0 0 20px rgba(242, 177, 70, 0.38);
+    box-shadow:
+      0 18px 42px rgba(0, 0, 0, 0.24),
+      0 0 24px rgba(242, 177, 70, 0.18);
+    transform: translateY(-1px);
+  }
+
+  .proof-button:hover::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .shader-surface {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      linear-gradient(145deg, rgba(17, 21, 20, 0.96), rgba(8, 10, 10, 0.96)),
+      var(--surface);
+  }
+
+  .shader-surface::before {
+    content: "";
+    position: absolute;
+    inset: -35%;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(242, 177, 70, 0.18), transparent 24%),
+      radial-gradient(circle at 78% 18%, rgba(246, 241, 232, 0.08), transparent 22%),
+      radial-gradient(circle at 58% 78%, rgba(169, 176, 170, 0.1), transparent 24%),
+      conic-gradient(from 90deg at 50% 50%, transparent, rgba(242, 177, 70, 0.1), transparent 36%);
+    filter: blur(24px);
+    opacity: 0.78;
+    animation: shader-drift 16s ease-in-out infinite alternate;
+  }
+
+  .shader-accent {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .shader-accent::before {
+    content: "";
+    position: absolute;
+    inset: -55%;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 24% 24%, rgba(242, 177, 70, 0.28), transparent 22%),
+      radial-gradient(circle at 76% 34%, rgba(255, 212, 124, 0.16), transparent 24%),
+      linear-gradient(115deg, transparent 20%, rgba(242, 177, 70, 0.14) 48%, transparent 72%);
+    opacity: 0.72;
+    animation: shader-sweep 12s ease-in-out infinite;
+  }
+
+  @keyframes shader-drift {
+    from {
+      transform: translate3d(-2%, -1%, 0) rotate(0deg) scale(1);
+    }
+
+    to {
+      transform: translate3d(2%, 1%, 0) rotate(8deg) scale(1.06);
+    }
+  }
+
+  @keyframes shader-sweep {
+    0% {
+      transform: translate3d(-3%, 0, 0) rotate(0deg);
+    }
+
+    50% {
+      transform: translate3d(3%, -2%, 0) rotate(6deg);
+    }
+
+    100% {
+      transform: translate3d(-3%, 0, 0) rotate(0deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-gradient-accent,
+    .btn-gradient-dark,
+    .btn-gradient-accent::before,
+    .btn-gradient-dark::before,
+    .proof-button,
+    .proof-button::after {
+      transition: none;
+    }
+
+    .proof-button:hover {
+      transform: none;
+    }
+
+    .shader-surface::before,
+    .shader-accent::before {
+      animation: none;
+    }
   }
 }

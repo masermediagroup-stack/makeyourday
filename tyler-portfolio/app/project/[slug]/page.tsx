@@ -102,7 +102,7 @@ export default async function ProjectPage({ params }: Props) {
         {project.images[0] || project.thumbnail ? (
           <ImageReveal
             src={project.images[0] ?? project.thumbnail!}
-            alt=""
+            alt={`${project.title} project preview`}
             width={1200}
             height={675}
             className="w-full"
@@ -115,7 +115,13 @@ export default async function ProjectPage({ params }: Props) {
       {project.images.length > 1 ? (
         <div className={styles.grid}>
           {project.images.slice(1).map((src) => (
-            <ImageReveal key={src} src={src} alt="" width={800} height={600} />
+            <ImageReveal
+              key={src}
+              src={src}
+              alt={`${project.title} supporting project image`}
+              width={800}
+              height={600}
+            />
           ))}
         </div>
       ) : null}

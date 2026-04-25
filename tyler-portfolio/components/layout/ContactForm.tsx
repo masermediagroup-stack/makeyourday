@@ -19,7 +19,7 @@ export function ContactForm() {
 
     const subject = encodeURIComponent("Portfolio inquiry");
     const body = encodeURIComponent(
-      `Name: ${first} ${last}\nEmail: ${email}\nPhone: ${phone}\n\n${message}`,
+      `Name: ${first} ${last}\nEmail: ${email}\nPhone: ${phone || "Not provided"}\n\n${message}`,
     );
     window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
   }
@@ -75,7 +75,6 @@ export function ContactForm() {
         <input
           id="contact-phone"
           name="phone"
-          required
           type="tel"
           className={formStyles.input}
           autoComplete="tel"
@@ -98,7 +97,7 @@ export function ContactForm() {
 
       <button type="submit" className={formStyles.fancy}>
         <span className={formStyles.topKey} aria-hidden />
-        <span className={formStyles.text}>submit</span>
+        <span className={formStyles.text}>open email draft</span>
         <span className={formStyles.bottomKey1} aria-hidden />
         <span className={formStyles.bottomKey2} aria-hidden />
       </button>

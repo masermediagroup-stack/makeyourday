@@ -34,21 +34,37 @@ function BrandDesignNav({
 
   return (
     <li>
-      <button
-        type="button"
-        className={styles.brandRow}
-        onClick={() => setBrandOpen((o) => !o)}
-        aria-expanded={brandOpen}
-      >
-        <span className="body-md flex-1 text-left">Brand Design</span>
-        <span
-          className={`${styles.arrow} ${brandOpen ? styles.arrowOpen : ""}`}
-          aria-hidden
+      <div className={styles.brandRow}>
+        <Link
+          href="/work/brand-design"
+          className={`body-md ${styles.brandLink} ${isActive("/work/brand-design") ? styles.navLinkActive : ""}`}
         >
-          ▸
-        </span>
-      </button>
+          Brand Design
+        </Link>
+        <button
+          type="button"
+          className={styles.brandToggle}
+          onClick={() => setBrandOpen((o) => !o)}
+          aria-expanded={brandOpen}
+          aria-label={brandOpen ? "Collapse Brand Design links" : "Expand Brand Design links"}
+        >
+          <span
+            className={`${styles.arrow} ${brandOpen ? styles.arrowOpen : ""}`}
+            aria-hidden
+          >
+            ▸
+          </span>
+        </button>
+      </div>
       <ul className={`${styles.subList} ${brandOpen ? styles.subListOpen : ""}`}>
+        <li>
+          <Link
+            href="/work/brand-design"
+            className={`${styles.subLink} ${pathname === "/work/brand-design" ? styles.subLinkActive : ""}`}
+          >
+            Overview
+          </Link>
+        </li>
         {brandSubLinks.map((l) => (
           <li key={l.href}>
             <Link

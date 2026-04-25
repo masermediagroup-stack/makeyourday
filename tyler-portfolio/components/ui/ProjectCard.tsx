@@ -31,7 +31,7 @@ export function ProjectCard({ project }: { project: Project }) {
                 width={800}
                 height={600}
                 className="h-full w-full object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 640px"
               />
             ) : (
               <PlaceholderBlock label={project.title} ratio="4/3" />

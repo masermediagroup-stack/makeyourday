@@ -25,6 +25,10 @@ export function ImageReveal({
   useEffect(() => {
     const el = wrap.current;
     if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(el, { clipPath: "inset(0% 0% 0% 0%)" });
+      return;
+    }
 
     const ctx = gsap.context(() => {
       gsap.fromTo(

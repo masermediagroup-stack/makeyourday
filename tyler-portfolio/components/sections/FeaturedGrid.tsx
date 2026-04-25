@@ -1,6 +1,5 @@
 "use client";
 
-import { site } from "@/data/site";
 import { getFeaturedProjects } from "@/lib/projects";
 
 import { ProjectCard } from "@/components/ui/ProjectCard";
@@ -15,38 +14,47 @@ export function FeaturedGrid() {
   const featured = getFeaturedProjects();
 
   return (
-    <section className={gridStyles.section} aria-labelledby="featured-heading">
+    <section
+      id="featured-work"
+      className={gridStyles.section}
+      aria-labelledby="featured-heading"
+    >
       <div className={gridStyles.stats}>
-        <p className="label-sm text-[var(--text-muted)]">
-          {`${site.name} - ${site.heroTagline}`}
+        <p className="label-sm leading-snug text-[var(--text-muted)]">
+          Selected work
         </p>
         <div className={gridStyles.statsRow}>
-          <div className="display-md text-[var(--text-primary)]">
-            <NumberTicker value={7} delay={0.15} />+ years
+          <div className="font-heading text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl">
+            <NumberTicker value={7} delay={0.15} />+ years of practice
           </div>
-          <div className="display-md text-[var(--text-primary)] sm:text-right">
-            <NumberTicker value={75} delay={0.22} />+ clients satisfied
+          <div className="font-heading text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl sm:text-right">
+            <NumberTicker value={75} delay={0.22} />+ clients and teams
           </div>
         </div>
       </div>
-      <div className="mb-12 overflow-hidden rounded-sm border border-[var(--border-line)] bg-[var(--bg-secondary)] py-3">
+      <div className="mb-6 overflow-hidden rounded-sm border border-[var(--border-line)] bg-[var(--bg-secondary)] py-1.5">
         <Marquee pauseOnHover className="[--duration:40s]">
           {tools.map((t) => (
             <span
               key={t}
-              className="mx-6 text-sm font-medium text-[var(--text-muted)]"
+              className="mx-4 text-xs font-medium text-[var(--text-muted)]"
             >
               {t}
             </span>
           ))}
         </Marquee>
       </div>
-      <h2 id="featured-heading" className="display-md mb-10 text-[var(--text-primary)]">
+      <h2
+        id="featured-heading"
+        className="font-heading mb-6 text-2xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-3xl"
+      >
         Featured work
       </h2>
       <div className={gridStyles.grid}>
         {featured.map((p) => (
-          <ProjectCard key={p.slug} project={p} />
+          <div key={p.slug} className={gridStyles.gridItem}>
+            <ProjectCard project={p} />
+          </div>
         ))}
       </div>
     </section>

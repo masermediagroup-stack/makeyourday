@@ -63,13 +63,13 @@
 }
 
 .form label .input:focus + span,
-.form label .input:valid + span {
+.form label .input:not(:placeholder-shown) + span {
   top: 30px;
   font-size: 0.7em;
   font-weight: 600;
 }
 
-.form label .input:valid + span {
+.form label .input:not(:placeholder-shown) + span {
   color: #16a34a;
 }
 
@@ -110,13 +110,13 @@
 }
 
 .form label .input01:focus + span,
-.form label .input01:valid + span {
+.form label .input01:not(:placeholder-shown) + span {
   top: 50px;
   font-size: 0.7em;
   font-weight: 600;
 }
 
-.form label .input01:valid + span {
+.form label .input01:not(:placeholder-shown) + span {
   color: #16a34a;
 }
 
@@ -162,14 +162,12 @@
 .fancy .text {
   font-size: 1.125em;
   line-height: 1.33333em;
-  padding-left: 2em;
   display: block;
-  text-align: left;
+  text-align: center;
   transition: all 0.3s ease-in-out;
   text-transform: lowercase;
   text-decoration: none;
   color: var(--text-secondary);
-  transform: translateX(30%);
 }
 
 .fancy .topKey {
@@ -221,7 +219,6 @@
 
 .fancy:hover .text {
   color: #fff;
-  padding-left: 1.5em;
 }
 
 .fancy:hover .topKey {

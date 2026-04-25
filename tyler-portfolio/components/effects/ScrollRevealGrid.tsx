@@ -18,6 +18,7 @@ export function ScrollRevealGrid({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const cards = el.querySelectorAll("[data-reveal-card]");
     const ctx = gsap.context(() => {

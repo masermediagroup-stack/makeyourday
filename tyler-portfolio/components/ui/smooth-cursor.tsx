@@ -238,7 +238,7 @@ export function SmoothCursor({
         clearTimeout(timeout)
       }
     }
-  }, [isEnabled])
+  }, [cursorX, cursorY, isEnabled, rotation, scale])
 
   if (!isEnabled) {
     return null

@@ -12,6 +12,10 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(el, { opacity: 1, y: 0 });
+      return;
+    }
 
     if (prevPath.current !== pathname) {
       prevPath.current = pathname;

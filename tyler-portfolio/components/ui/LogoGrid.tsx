@@ -38,7 +38,7 @@ export function LogoGrid({ items }: { items: LogoItem[] }) {
               {item.src ? (
                 <Image
                   src={item.src}
-                  alt=""
+                  alt={`${item.client} logo`}
                   width={320}
                   height={200}
                   className="max-h-full max-w-full object-contain"
@@ -63,7 +63,7 @@ export function LogoGrid({ items }: { items: LogoItem[] }) {
                 {active.src ? (
                   <Image
                     src={active.src}
-                    alt=""
+                    alt={`${active.client} logo`}
                     width={480}
                     height={320}
                     className="max-h-[320px] w-auto object-contain"

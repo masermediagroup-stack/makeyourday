@@ -1,83 +1,67 @@
 import Image from "next/image";
+import Link from "next/link";
+import { TopNav } from "@/components/landing/TopNav";
 import { BidRequestForm } from "@/components/request-bid/BidRequestForm";
 
-const galleryItems = [
-  {
-    src: "/images/ironclad/fallback-01.jpeg",
-    alt: "Brutalist interior corridors in cast concrete.",
-    code: "SITE LOG / 201",
-  },
-  {
-    src: "/images/ironclad/fallback-02.jpg",
-    alt: "Monolithic concrete blocks under overcast daylight.",
-    code: "SITE LOG / 202",
-  },
-  {
-    src: "/images/ironclad/fallback-05.jpg",
-    alt: "Crew working on reinforced concrete formwork.",
-    code: "SITE LOG / 203",
-  },
-  {
-    src: "/images/ironclad/fallback-07.jpg",
-    alt: "Active demolition staging with heavy machinery.",
-    code: "SITE LOG / 204",
-  },
+const readinessItems = [
+  "Drawings or narrative scope",
+  "Target start date",
+  "Known access restrictions",
+  "Safety or owner requirements",
 ];
 
 export default function RequestBidPage() {
   return (
-    <main className="min-h-[100dvh] bg-[var(--bg)]">
-      <header className="border-b border-[var(--line)]">
-        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 py-4 md:px-8">
-          <p className="text-lg font-semibold uppercase tracking-tight">Ironclad Build Co.</p>
-          <a
-            href="/"
-            className="border border-[var(--line)] px-4 py-2 text-xs uppercase tracking-[0.14em] text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-          >
-            Back to home
-          </a>
-        </div>
-      </header>
-
-      <section className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-8 px-4 py-10 md:px-8 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-6 border border-[var(--line)] bg-[var(--surface)] p-6 md:p-8">
-          <p className="text-xs uppercase tracking-[0.16em] text-[var(--accent)]">
-            Request a bid
-          </p>
-          <h1 className="max-w-[20ch] text-3xl font-bold uppercase tracking-[-0.02em] md:text-5xl">
-            Send project scope for pricing.
-          </h1>
-          <p className="max-w-[65ch] text-sm leading-relaxed text-[var(--muted)] md:text-base">
-            This demo intake page collects your project profile, timeline, and
-            budget range so estimating can return an initial proposal package.
-          </p>
-          <BidRequestForm />
-        </div>
-
-        <aside className="space-y-4">
-          <div className="border border-[var(--line)] bg-[var(--surface)] p-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
-              Typical turnaround
+    <main className="w-full max-w-full overflow-x-hidden bg-[var(--bg)] text-[var(--fg)]">
+      <TopNav />
+      <section className="px-5 pb-20 pt-36 md:px-8 md:pb-28">
+        <div className="mx-auto grid max-w-[1380px] gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <Link href="/" className="text-xs font-black uppercase tracking-[0.14em] text-[var(--accent)]">
+              Back to Ironclad
+            </Link>
+            <h1 className="mt-6 max-w-5xl text-[clamp(3rem,7vw,6.5rem)] font-black uppercase leading-[0.88] tracking-normal">
+              Send scope for estimating.
+            </h1>
+            <p className="mt-7 max-w-3xl text-xl leading-8 text-[var(--muted)]">
+              The intake now asks for the details that shape price and schedule: project type, timing, budget posture, contact path, and scope narrative.
             </p>
-            <p className="mt-2 font-mono text-2xl">18-36 hrs</p>
-            <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
-              Scope review, site assumptions, and an initial work package estimate.
-            </p>
-          </div>
-
-          <div className="grid gap-px bg-[var(--line)]">
-            {galleryItems.map((item) => (
-              <article key={item.code} className="bg-[var(--surface)] p-3">
-                <div className="relative aspect-[16/10] overflow-hidden border border-[var(--line)]">
-                  <Image src={item.src} alt={item.alt} fill className="object-cover opacity-85" />
+            <div className="mt-10 grid gap-3 md:grid-cols-2">
+              {readinessItems.map((item) => (
+                <div key={item} className="shader-surface rounded-lg border border-white/10 p-4 text-sm font-bold uppercase tracking-[0.08em] text-white/78">
+                  {item}
                 </div>
-                <p className="pt-2 text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
-                  {item.code}
-                </p>
-              </article>
-            ))}
+              ))}
+            </div>
           </div>
-        </aside>
+          <div className="relative min-h-[420px] overflow-hidden rounded-lg border border-white/10">
+            <Image src="/images/ironclad/fallback-05.jpg" alt="Crew working on concrete formwork." fill priority className="object-cover opacity-88" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/20 to-transparent" />
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 pb-28 md:px-8 md:pb-40">
+        <div className="mx-auto grid max-w-[1380px] gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="shader-surface rounded-lg border border-white/10 p-6 md:p-8">
+            <BidRequestForm />
+          </div>
+          <aside className="shader-accent h-fit rounded-lg border border-white/10 bg-white p-6 text-[var(--ink)] md:p-8">
+            <p className="text-sm font-black uppercase tracking-[0.12em] text-black/48">Typical turnaround</p>
+            <p className="mt-4 font-mono text-5xl">18-36 hrs</p>
+            <p className="mt-5 text-base font-semibold leading-7 text-black/62">
+              Scope review, site assumptions, alternates, and an initial work package estimate. Complex public or occupied-site bids may need a pre-bid call.
+            </p>
+            <div className="mt-8 grid gap-3">
+              <Link href="/services/concrete-structures" className="rounded-full border border-black/12 px-5 py-3 text-xs font-black uppercase tracking-[0.12em] text-[var(--ink)]">
+                Concrete Services
+              </Link>
+              <Link href="/projects" className="rounded-full border border-black/12 px-5 py-3 text-xs font-black uppercase tracking-[0.12em] text-[var(--ink)]">
+                Project Proof
+              </Link>
+            </div>
+          </aside>
+        </div>
       </section>
     </main>
   );

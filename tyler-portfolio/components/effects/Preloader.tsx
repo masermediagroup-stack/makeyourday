@@ -13,6 +13,10 @@ export function Preloader() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      sessionStorage.setItem(STORAGE_KEY, "1");
+      return;
+    }
     const done = sessionStorage.getItem(STORAGE_KEY);
     if (done === "1") return;
     const id = requestAnimationFrame(() => setShow(true));
