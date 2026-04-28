@@ -8,6 +8,19 @@ interface Position {
   y: number
 }
 
+interface SparkleParticle {
+  id: number
+  x: number
+  y: number
+  vx: number
+  vy: number
+  size: number
+  bornAt: number
+  lifeMs: number
+  color: string
+  opacity: number
+}
+
 export interface SmoothCursorProps {
   cursor?: React.ReactNode
   springConfig?: {
@@ -20,6 +33,14 @@ export interface SmoothCursorProps {
 
 const DESKTOP_POINTER_QUERY = "(any-hover: hover) and (any-pointer: fine)"
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"
+const MAX_SPARKLES = 18
+const SPARKLE_EMIT_INTERVAL_MS = 60
+const SPARKLE_MIN_LIFE_MS = 220
+const SPARKLE_MAX_LIFE_MS = 380
+const SPARKLE_COLORS = [
+  "rgba(167, 139, 250, 1)",
+  "rgba(139, 92, 246, 1)",
+] as const
 
 function isTrackablePointer(pointerType: string) {
   return pointerType !== "touch"
@@ -27,73 +48,45 @@ function isTrackablePointer(pointerType: string) {
 
 const DefaultCursorSVG: FC = () => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={50}
-      height={54}
-      viewBox="0 0 50 54"
-      fill="none"
-      style={{ scale: 0.5 }}
+    <div
+      style={{
+        position: "relative",
+        width: 34,
+        height: 34,
+      }}
     >
-      <g filter="url(#filter0_d_91_7928)">
-        <path
-          d="M42.6817 41.1495L27.5103 6.79925C26.7269 5.02557 24.2082 5.02558 23.3927 6.79925L7.59814 41.1495C6.75833 42.9759 8.52712 44.8902 10.4125 44.1954L24.3757 39.0496C24.8829 38.8627 25.4385 38.8627 25.9422 39.0496L39.8121 44.1954C41.6849 44.8902 43.4884 42.9759 42.6817 41.1495Z"
-          fill="black"
-        />
-        <path
-          d="M43.7146 40.6933L28.5431 6.34306C27.3556 3.65428 23.5772 3.69516 22.3668 6.32755L6.57226 40.6778C5.3134 43.4156 7.97238 46.298 10.803 45.2549L24.7662 40.109C25.0221 40.0147 25.2999 40.0156 25.5494 40.1082L39.4193 45.254C42.2261 46.2953 44.9254 43.4347 43.7146 40.6933Z"
-          stroke="white"
-          strokeWidth={2.25825}
-        />
-      </g>
-      <defs>
-        <filter
-          id="filter0_d_91_7928"
-          x={0.602397}
-          y={0.952444}
-          width={49.0584}
-          height={52.428}
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity={0} result="BackgroundImageFix" />
-          <feColorMatrix
-            in="SourceAlpha"
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-            result="hardAlpha"
-          />
-          <feOffset dy={2.25825} />
-          <feGaussianBlur stdDeviation={2.25825} />
-          <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"
-          />
-          <feBlend
-            mode="normal"
-            in2="BackgroundImageFix"
-            result="effect1_dropShadow_91_7928"
-          />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="effect1_dropShadow_91_7928"
-            result="shape"
-          />
-        </filter>
-      </defs>
-    </svg>
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: "9999px",
+          border: "1.5px solid rgba(0, 0, 0, 0.45)",
+          backgroundColor: "rgba(0, 0, 0, 0.08)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          width: 8,
+          height: 8,
+          borderRadius: "9999px",
+          backgroundColor: "rgba(0, 0, 0, 0.92)",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    </div>
   )
 }
 
 export function SmoothCursor({
   cursor = <DefaultCursorSVG />,
   springConfig = {
-    damping: 45,
-    stiffness: 400,
-    mass: 1,
-    restDelta: 0.001,
+    damping: 32,
+    stiffness: 680,
+    mass: 0.7,
+    restDelta: 0.0008,
   },
 }: SmoothCursorProps) {
   const lastMousePos = useRef<Position>({ x: 0, y: 0 })
@@ -101,6 +94,10 @@ export function SmoothCursor({
   const lastUpdateTime = useRef(Date.now())
   const previousAngle = useRef(0)
   const accumulatedRotation = useRef(0)
+  const sparklesRef = useRef<SparkleParticle[]>([])
+  const sparkleIdRef = useRef(0)
+  const lastSparkleEmitRef = useRef(0)
+  const [sparkles, setSparkles] = useState<SparkleParticle[]>([])
   const [isEnabled, setIsEnabled] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -108,13 +105,13 @@ export function SmoothCursor({
   const cursorY = useSpring(0, springConfig)
   const rotation = useSpring(0, {
     ...springConfig,
-    damping: 60,
-    stiffness: 300,
+    damping: 40,
+    stiffness: 380,
   })
   const scale = useSpring(1, {
     ...springConfig,
-    stiffness: 500,
-    damping: 35,
+    stiffness: 620,
+    damping: 28,
   })
 
   useEffect(() => {
@@ -152,10 +149,77 @@ export function SmoothCursor({
 
   useEffect(() => {
     if (!isEnabled) {
+      sparklesRef.current = []
+      setSparkles([])
       return
     }
 
     let timeout: ReturnType<typeof setTimeout> | null = null
+    let sparkleRafId = 0
+
+    const emitSparkle = (position: Position, speed: number) => {
+      const now = performance.now()
+      if (now - lastSparkleEmitRef.current < SPARKLE_EMIT_INTERVAL_MS) {
+        return
+      }
+      lastSparkleEmitRef.current = now
+
+      const speedFactor = Math.min(speed / 1.4, 1)
+      const particle: SparkleParticle = {
+        id: sparkleIdRef.current++,
+        x: position.x + (Math.random() * 8 - 4),
+        y: position.y + (Math.random() * 8 - 4),
+        vx: velocity.current.x * -8 + (Math.random() * 0.24 - 0.12),
+        vy: velocity.current.y * -8 + (Math.random() * 0.24 - 0.12),
+        size: 1.8 + Math.random() * 1.6,
+        bornAt: now,
+        lifeMs:
+          SPARKLE_MIN_LIFE_MS +
+          Math.random() * (SPARKLE_MAX_LIFE_MS - SPARKLE_MIN_LIFE_MS),
+        color: SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)],
+        opacity: 0.18 + speedFactor * 0.2,
+      }
+
+      const nextParticles = sparklesRef.current
+        .concat(particle)
+        .slice(-MAX_SPARKLES)
+      sparklesRef.current = nextParticles
+      setSparkles(nextParticles)
+    }
+
+    const tickSparkles = () => {
+      const now = performance.now()
+      const nextParticles: SparkleParticle[] = []
+
+      for (const particle of sparklesRef.current) {
+        const age = now - particle.bornAt
+        if (age >= particle.lifeMs) {
+          continue
+        }
+
+        const lifeProgress = age / particle.lifeMs
+        nextParticles.push({
+          ...particle,
+          x: particle.x + particle.vx,
+          y: particle.y + particle.vy,
+          vx: particle.vx * 0.93,
+          vy: particle.vy * 0.93,
+          opacity: Math.max(0, particle.opacity * (1 - lifeProgress * 0.92)),
+        })
+      }
+
+      if (nextParticles.length !== sparklesRef.current.length) {
+        sparklesRef.current = nextParticles
+        setSparkles(nextParticles)
+      } else if (nextParticles.length > 0) {
+        sparklesRef.current = nextParticles
+        setSparkles(nextParticles)
+      }
+
+      sparkleRafId = requestAnimationFrame(tickSparkles)
+    }
+
+    sparkleRafId = requestAnimationFrame(tickSparkles)
 
     const updateVelocity = (currentPos: Position) => {
       const currentTime = Date.now()
@@ -190,6 +254,8 @@ export function SmoothCursor({
       cursorY.set(currentPos.y)
 
       if (speed > 0.1) {
+        emitSparkle(currentPos, speed)
+
         const currentAngle =
           Math.atan2(velocity.current.y, velocity.current.x) * (180 / Math.PI) +
           90
@@ -234,9 +300,12 @@ export function SmoothCursor({
     return () => {
       window.removeEventListener("pointermove", throttledPointerMove)
       if (rafId) cancelAnimationFrame(rafId)
+      if (sparkleRafId) cancelAnimationFrame(sparkleRafId)
       if (timeout !== null) {
         clearTimeout(timeout)
       }
+      sparklesRef.current = []
+      setSparkles([])
     }
   }, [cursorX, cursorY, isEnabled, rotation, scale])
 
@@ -245,27 +314,55 @@ export function SmoothCursor({
   }
 
   return (
-    <motion.div
-      style={{
-        position: "fixed",
-        left: cursorX,
-        top: cursorY,
-        translateX: "-50%",
-        translateY: "-50%",
-        rotate: rotation,
-        scale: scale,
-        zIndex: 100,
-        pointerEvents: "none",
-        willChange: "transform",
-        opacity: isVisible ? 1 : 0,
-      }}
-      initial={false}
-      animate={{ opacity: isVisible ? 1 : 0 }}
-      transition={{
-        duration: 0.15,
-      }}
-    >
-      {cursor}
-    </motion.div>
+    <>
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 99,
+        }}
+      >
+        {sparkles.map((particle) => (
+          <span
+            key={particle.id}
+            style={{
+              position: "absolute",
+              left: particle.x,
+              top: particle.y,
+              width: particle.size,
+              height: particle.size,
+              borderRadius: "9999px",
+              backgroundColor: particle.color,
+              opacity: particle.opacity,
+              transform: "translate(-50%, -50%)",
+              willChange: "transform, opacity",
+            }}
+          />
+        ))}
+      </div>
+      <motion.div
+        style={{
+          position: "fixed",
+          left: cursorX,
+          top: cursorY,
+          translateX: "-50%",
+          translateY: "-50%",
+          rotate: rotation,
+          scale: scale,
+          zIndex: 100,
+          pointerEvents: "none",
+          willChange: "transform",
+          opacity: isVisible ? 1 : 0,
+        }}
+        initial={false}
+        animate={{ opacity: isVisible ? 1 : 0 }}
+        transition={{
+          duration: 0.15,
+        }}
+      >
+        {cursor}
+      </motion.div>
+    </>
   )
 }

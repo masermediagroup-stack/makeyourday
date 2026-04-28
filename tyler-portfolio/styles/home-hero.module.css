@@ -2,33 +2,35 @@
   position: relative;
   isolation: isolate;
   min-height: min(820px, calc(100svh - 128px));
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-  grid-template-areas:
-    "copy visual"
-    "proof proof"
-    "capabilities capabilities";
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: clamp(2rem, 4vw, 4rem);
+  gap: clamp(1.5rem, 2.8vw, 2.5rem);
   padding: clamp(1.5rem, 4vw, 3.5rem) 0 clamp(4rem, 10vh, 7rem);
-  overflow: hidden;
+  overflow: visible;
+  text-align: center;
 }
 
 .hero::before {
   content: "";
   position: absolute;
-  inset: 9% -10% 24% 26%;
+  inset: 10% -20% 22% -20%;
   z-index: -1;
   background:
-    radial-gradient(circle at 62% 35%, rgba(124, 58, 237, 0.13), transparent 34%),
-    linear-gradient(135deg, rgba(245, 245, 245, 0), rgba(245, 245, 245, 0.92));
-  filter: blur(8px);
+    radial-gradient(
+      66% 50% at 50% 32%,
+      rgba(124, 58, 237, 0.13) 0%,
+      rgba(124, 58, 237, 0.08) 36%,
+      rgba(124, 58, 237, 0) 76%
+    );
   pointer-events: none;
 }
 
 .copy {
-  grid-area: copy;
   max-width: 48rem;
+  position: relative;
+  z-index: 1;
 }
 
 .kicker {
@@ -54,7 +56,7 @@
 
 .body {
   max-width: 39rem;
-  margin: 1.5rem 0 0;
+  margin: 1.25rem auto 0;
   font-family: var(--font-body), sans-serif;
   font-size: clamp(1rem, 1.45vw, 1.125rem);
   line-height: 1.7;
@@ -66,6 +68,7 @@
   flex-wrap: wrap;
   gap: 0.875rem;
   margin-top: 2rem;
+  justify-content: center;
 }
 
 .primaryCta,
@@ -115,78 +118,17 @@
   color: var(--portfolio-accent);
 }
 
-.visualWrap {
-  grid-area: visual;
-  position: relative;
-  min-width: 0;
-}
-
-.visualWrap::after {
-  content: "";
-  position: absolute;
-  inset: auto 8% -8% 20%;
-  height: 16%;
-  background: radial-gradient(ellipse, rgba(124, 58, 237, 0.18), transparent 68%);
-  filter: blur(18px);
-  pointer-events: none;
-}
-
-.visual {
-  display: block;
-  width: min(100%, 760px);
-  height: auto;
-  margin-left: auto;
-  border-radius: 2px;
-  border: 1px solid var(--border-line);
-  box-shadow: 0 32px 90px rgba(10, 10, 10, 0.08);
-}
-
-.proofGrid {
-  grid-area: proof;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  border: 1px solid var(--border-line);
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(14px);
-}
-
-.proofItem {
-  display: flex;
-  min-height: 5.25rem;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.25rem;
-  padding: 1rem 1.25rem;
-  border-right: 1px solid var(--border-line);
-}
-
-.proofItem:last-child {
-  border-right: 0;
-}
-
-.proofValue {
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(1.65rem, 3vw, 2.6rem);
-  font-weight: 800;
-  line-height: 1;
-  color: var(--text-primary);
-}
-
-.proofLabel {
-  font-family: var(--font-body), sans-serif;
-  font-size: 0.85rem;
-  line-height: 1.35;
-  color: var(--text-muted);
-}
-
 .capabilityRow {
-  grid-area: capabilities;
   display: flex;
   flex-wrap: wrap;
   gap: 0.625rem;
+  justify-content: center;
 }
 
-.capabilityRow span {
+.capabilityPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--border-line);
   border-radius: 999px;
   background: var(--bg-secondary);
@@ -195,17 +137,30 @@
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-secondary);
+  text-decoration: none;
+  transition:
+    transform var(--duration-fast) var(--ease-out-expo),
+    background var(--duration-fast) var(--ease-out-expo),
+    color var(--duration-fast) var(--ease-out-expo),
+    border-color var(--duration-fast) var(--ease-out-expo);
+}
+
+.capabilityPill:hover,
+.capabilityPill:focus-visible {
+  transform: scale(1.05);
+  background: var(--portfolio-accent);
+  color: #ffffff;
+  border-color: var(--portfolio-accent);
+}
+
+.capabilityPill:focus-visible {
+  outline: 2px solid var(--portfolio-accent);
+  outline-offset: 2px;
 }
 
 @media (max-width: 1023px) {
   .hero {
     min-height: auto;
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "copy"
-      "visual"
-      "proof"
-      "capabilities";
     gap: 2rem;
     padding-top: 1rem;
   }
@@ -215,39 +170,25 @@
     max-width: none;
   }
 
-  .visual {
-    width: 100%;
-  }
 }
 
 @media (max-width: 640px) {
   .heading {
     font-size: clamp(2.55rem, 11vw, 3.7rem);
   }
-
-  .proofGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .proofItem,
-  .proofItem:last-child {
-    border-right: 0;
-    border-bottom: 1px solid var(--border-line);
-  }
-
-  .proofItem:last-child {
-    border-bottom: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .primaryCta,
-  .secondaryCta {
+  .secondaryCta,
+  .capabilityPill {
     transition: none;
   }
 
   .primaryCta:hover,
-  .secondaryCta:hover {
+  .secondaryCta:hover,
+  .capabilityPill:hover,
+  .capabilityPill:focus-visible {
     transform: none;
   }
 }
